@@ -11,7 +11,8 @@
   },
   "scripts": {
     "dev": "vue-tsc -b && vite",
-    "build": "vue-tsc -b &&NODE_OPTIONS=--max_old_space_size=4096 vite build",
+    "build": "vue-tsc -b && node --max-old-space-size=4096 ./node_modules/vite/bin/vite.js build",
+    "build:legacy": "vue-tsc -b && node --max-old-space-size=4096 ./node_modules/vite/bin/vite.js build --mode legacy",
     "preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --fix"
   },

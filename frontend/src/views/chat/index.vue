@@ -248,6 +248,11 @@
                       />
                       <ChatToolBar v-if="!message.isTyping" :message="message">
                         <div class="tool-btns">
+                          <FeedbackControls
+                            :record-id="message.record?.id"
+                            :disabled="isTyping"
+                          />
+                          <div class="divider"></div>
                           <el-tooltip
                             effect="dark"
                             :offset="8"
@@ -465,6 +470,7 @@ import ChatCreator from '@/views/chat/ChatCreator.vue'
 import ChatTokenTime from '@/views/chat/ChatTokenTime.vue'
 import ErrorInfo from './ErrorInfo.vue'
 import ChatToolBar from './ChatToolBar.vue'
+import FeedbackControls from './FeedbackControls.vue'
 import { dsTypeWithImg } from '@/views/ds/js/ds-type'
 import { useI18n } from 'vue-i18n'
 import { find, forEach } from 'lodash-es'

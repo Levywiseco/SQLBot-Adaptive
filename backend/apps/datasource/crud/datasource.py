@@ -516,7 +516,8 @@ def get_tables_sample_data(session: SessionDep, current_user: CurrentUser, ds: C
 
 
 def get_table_schema(session: SessionDep, current_user: CurrentUser, ds: CoreDatasource, question: str,
-                     embedding: bool = True, table_list: list[str] = None) -> tuple[str, list]:
+                     embedding: bool = True, table_list: list[str] = None,
+                     required_tables: list[str] = None) -> tuple[str, list]:
     schema_str = ""
     table_objs = get_table_obj_by_ds(session=session, current_user=current_user, ds=ds)
     if len(table_objs) == 0:
@@ -567,6 +568,15 @@ def get_table_schema(session: SessionDep, current_user: CurrentUser, ds: CoreDat
     # do table embedding
     if embedding and tables and settings.TABLE_EMBEDDING_ENABLED:
         tables = calc_table_embedding(tables, question)
+    # Published metrics may require tables that semantic table selection did not
+    # choose from the natural-language question alone.
+    if required_tables:
+        selected_names = {item.get('table_name').casefold() for item in tables}
+        required_names = {name.casefold() for name in required_tables}
+        for item in all_tables:
+            if item.get('table_name').casefold() in required_names - selected_names:
+                tables.append(item)
+                selected_names.add(item.get('table_name').casefold())
     # splice schema
     if tables:
         for s in tables:

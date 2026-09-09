@@ -42,6 +42,14 @@ from apps.datasource.crud.permission import get_row_permission_filters, is_norma
 from apps.datasource.embedding.ds_embedding import get_ds_embedding
 from apps.datasource.models.datasource import CoreDatasource
 from apps.db.db import exec_sql, get_version, check_connection, get_sqlglot_dialect
+from apps.metrics.crud.metric import get_metric_prompt, get_metric_prompt_by_refs
+from apps.memory.crud.memory import (
+    get_memory_prompt,
+    load_metric_context,
+    looks_like_follow_up,
+    save_metric_context,
+    update_retrieval_trace,
+)
 from apps.system.crud.aimodel_manage import get_ai_model_list_by_workspace
 from apps.system.crud.assistant import AssistantOutDs, AssistantOutDsFactory, get_assistant_ds
 from apps.system.crud.parameter_manage import get_groups
@@ -303,6 +311,12 @@ class LLMService:
         if _system_templates.get('data_training'):
             self.sql_message.append(HumanPromptMessage(content=_system_templates['data_training']))
             self.sql_message.append(AIPromptMessage(content='我已确认您提供的SQL示例，我会进行参考。'))
+        if _system_templates.get('metrics'):
+            self.sql_message.append(HumanPromptMessage(content=_system_templates['metrics']))
+            self.sql_message.append(AIPromptMessage(content='我已确认命中的已发布指标及其版本，我会严格遵循对应口径。'))
+        if _system_templates.get('memories'):
+            self.sql_message.append(HumanPromptMessage(content=_system_templates['memories']))
+            self.sql_message.append(AIPromptMessage(content='我已确认可用记忆；当前问题和已发布指标优先，记忆不会扩大数据权限。'))
 
         if last_sql_messages is not None and len(last_sql_messages) > 0:
             last_rounds = get_last_conversation_rounds(last_sql_messages, rounds=count_limit)
@@ -443,6 +457,97 @@ class LLMService:
                                                                           OperationEnum.FILTER_SQL_EXAMPLE],
                                                                       full_message=example_list)
 
+    def filter_metric_template(self, _session: Session, oid: int = None, ds_id: int = None):
+        """Resolve published metrics before table selection and SQL generation."""
+        self.current_logs[OperationEnum.FILTER_METRIC] = start_log(
+            session=_session,
+            operate=OperationEnum.FILTER_METRIC,
+            record_id=self.record.id,
+            local_operation=True,
+        )
+        metric_prompt, metric_list, required_tables = get_metric_prompt(
+            _session,
+            self.chat_question.question,
+            oid,
+            ds_id,
+            current_user=self.current_user,
+        )
+        inherited = False
+        if not metric_list and looks_like_follow_up(self.chat_question.question):
+            context_refs = load_metric_context(
+                _session,
+                chat_id=self.chat_question.chat_id,
+                oid=int(oid or 1),
+                user_id=self.current_user.id,
+                datasource_id=ds_id,
+            )
+            metric_prompt, metric_list, required_tables = get_metric_prompt_by_refs(
+                _session,
+                context_refs,
+                oid,
+                ds_id,
+                current_user=self.current_user,
+            )
+            inherited = bool(metric_list)
+        self.chat_question.metrics = metric_prompt
+        self.chat_question.metric_tables = required_tables
+        if metric_list and not inherited:
+            save_metric_context(
+                _session,
+                chat_id=self.chat_question.chat_id,
+                oid=int(oid or 1),
+                user_id=self.current_user.id,
+                datasource_id=ds_id,
+                record_id=self.record.id,
+                metric_refs=metric_list,
+            )
+        update_retrieval_trace(
+            _session,
+            record_id=self.record.id,
+            oid=int(oid or 1),
+            user_id=self.current_user.id,
+            datasource_id=ds_id,
+            question=self.chat_question.question,
+            metric_refs=metric_list,
+            inherited_metric=inherited,
+        )
+        self.current_logs[OperationEnum.FILTER_METRIC] = end_log(
+            session=_session,
+            log=self.current_logs[OperationEnum.FILTER_METRIC],
+            full_message=metric_list,
+        )
+
+    def filter_memory_template(self, _session: Session, oid: int = None, ds_id: int = None):
+        """Resolve personal and reviewed shared memory within the caller's scope."""
+        self.current_logs[OperationEnum.FILTER_MEMORY] = start_log(
+            session=_session,
+            operate=OperationEnum.FILTER_MEMORY,
+            record_id=self.record.id,
+            local_operation=True,
+        )
+        memory_prompt, memory_list = get_memory_prompt(
+            _session,
+            self.chat_question.question,
+            oid,
+            self.current_user,
+            ds_id,
+        )
+        self.chat_question.memories = memory_prompt
+        update_retrieval_trace(
+            _session,
+            record_id=self.record.id,
+            oid=int(oid or 1),
+            user_id=self.current_user.id,
+            datasource_id=ds_id,
+            question=self.chat_question.question,
+            memory_refs=memory_list,
+        )
+        self.current_logs[OperationEnum.FILTER_MEMORY] = end_log(
+            session=_session,
+            log=self.current_logs[OperationEnum.FILTER_MEMORY],
+            full_message=memory_list,
+        )
+
     def choose_table_schema(self, _session: Session):
         self.current_logs[OperationEnum.CHOOSE_TABLE] = start_log(session=_session,
                                                                   operate=OperationEnum.CHOOSE_TABLE,
@@ -453,7 +558,8 @@ class LLMService:
             session=_session,
             current_user=self.current_user,
             ds=self.ds,
-            question=self.chat_question.question)
+            question=self.chat_question.question,
+            required_tables=self.chat_question.metric_tables)
 
         # Get sample data for all tables
         if not self.out_ds_instance:
@@ -778,6 +884,12 @@ class LLMService:
             ds_id = self.ds.id if isinstance(self.ds, CoreDatasource) else None
 
             self.filter_terminology_template(_session, oid, ds_id)
+
+            if settings.ADAPTIVE_METRICS_IN_ANSWERS:
+                self.filter_metric_template(_session, oid, ds_id)
+
+            if settings.ADAPTIVE_MEMORY_IN_ANSWERS:
+                self.filter_memory_template(_session, oid, ds_id)
 
             self.filter_training_template(_session, oid, ds_id)
 
@@ -1244,6 +1356,12 @@ class LLMService:
                 ds_id = self.ds.id if isinstance(self.ds, CoreDatasource) else None
 
                 self.filter_terminology_template(_session, oid, ds_id)
+
+                if settings.ADAPTIVE_METRICS_IN_ANSWERS:
+                    self.filter_metric_template(_session, oid, ds_id)
+
+                if settings.ADAPTIVE_MEMORY_IN_ANSWERS:
+                    self.filter_memory_template(_session, oid, ds_id)
 
                 self.filter_training_template(_session, oid, ds_id)
 

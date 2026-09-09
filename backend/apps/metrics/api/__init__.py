@@ -1,0 +1,1 @@
+"""Metric catalog API routes."""

@@ -13,6 +13,10 @@ class OperationModules(str, Enum):
     RULES = "rules"  # q组
     TERMINOLOGY = "terminology"  # 术语
     DATA_TRAINING = "data_training"  # SQL 示例库
+    METRIC = "metric"  # 指标库
+    MEMORY = "memory"  # 个人与共享记忆
+    FEEDBACK = "feedback"  # 问数反馈
+    LEARNING = "learning"  # 学习候选
     PROMPT_WORDS = "prompt_words"  # 自定义提示词
     USER = "user"  # 用户
     WORKSPACE = "workspace"  # 工作空间

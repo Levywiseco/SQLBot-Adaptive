@@ -26,6 +26,10 @@ config = context.config
 # from apps.settings.models.setting_models import SQLModel
 #from apps.chat.models.chat_model import SQLModel
 from apps.terminology.models.terminology_model import SQLModel
+from apps.metrics.models.metric import MetricDefinition, MetricVersion  # noqa: F401
+from apps.memory.models.memory import ChatContextState, MemoryEntry, RetrievalTrace  # noqa: F401
+from apps.feedback.models.feedback import FeedbackEvent  # noqa: F401
+from apps.learning.models.learning import LearningCandidate, LearningJob  # noqa: F401
 from sqlbot_xpack.custom_prompt.models.custom_prompt_model import SQLModel
 #from apps.data_training.models.data_training_model import SQLModel
 # from apps.dashboard.models.dashboard_model import SQLModel

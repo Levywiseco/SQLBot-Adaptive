@@ -47,6 +47,8 @@ class OperationEnum(Enum):
     FILTER_CUSTOM_PROMPT = '11'
     EXECUTE_SQL = '12'
     GENERATE_PICTURE = '13'
+    FILTER_METRIC = '14'
+    FILTER_MEMORY = '15'
 
 
 class ChatFinishStep(Enum):
@@ -249,6 +251,9 @@ class AiModelQuestion(BaseModel):
     sub_query: Optional[list[dict]] = None
     terminologies: str = ""
     data_training: str = ""
+    metrics: str = ""
+    metric_tables: list[str] = Field(default_factory=list)
+    memories: str = ""
     custom_prompt: str = ""
     error_msg: str = ""
     regenerate_record_id: Optional[int] = None
@@ -293,6 +298,12 @@ class AiModelQuestion(BaseModel):
         if self.data_training:
             templates['data_training'] = _base_template['generate_data_training_info'].format(
                 data_training=self.data_training)
+
+        if self.metrics:
+            templates['metrics'] = self.metrics
+
+        if self.memories:
+            templates['memories'] = self.memories
 
         if self.custom_prompt:
             templates['custom_prompt'] = _base_template['generate_custom_prompt_info'].format(

@@ -21,6 +21,9 @@ import EmbeddedCommon from '@/views/embedded/common.vue'
 import Member from '@/views/system/member/index.vue'
 import Professional from '@/views/system/professional/index.vue'
 import Training from '@/views/system/training/index.vue'
+import Metrics from '@/views/system/metrics/index.vue'
+import Memory from '@/views/memory/index.vue'
+import Learning from '@/views/system/learning/index.vue'
 import Prompt from '@/views/system/prompt/index.vue'
 import Audit from '@/views/system/audit/index.vue'
 import Appearance from '@/views/system/appearance/index.vue'
@@ -103,6 +106,23 @@ export const routes = [
     ],
   },
   {
+    path: '/memory',
+    component: LayoutDsl,
+    redirect: '/memory/index',
+    children: [
+      {
+        path: 'index',
+        name: 'memory',
+        component: Memory,
+        meta: {
+          title: t('memory.my_memory'),
+          iconActive: 'set',
+          iconDeActive: 'noSet',
+        },
+      },
+    ],
+  },
+  {
     path: '/set',
     name: 'set',
     component: LayoutDsl,
@@ -138,6 +158,18 @@ export const routes = [
         name: 'training',
         component: Training,
         meta: { title: t('training.data_training') },
+      },
+      {
+        path: '/set/metrics',
+        name: 'metrics',
+        component: Metrics,
+        meta: { title: t('metric.catalog') },
+      },
+      {
+        path: '/set/learning',
+        name: 'learning',
+        component: Learning,
+        meta: { title: t('learning.center') },
       },
       {
         path: '/set/prompt',

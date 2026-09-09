@@ -9,6 +9,7 @@ import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd())
+  const enableLegacy = mode === 'legacy' || env.VITE_ENABLE_LEGACY === 'true'
   console.info(mode)
   console.info(env)
   return {
@@ -28,11 +29,15 @@ export default defineConfig(({ mode }) => {
         svgo: false,
         defaultImport: 'component', // or 'raw'
       }),
-      legacy({
-        targets: ['Chrome >= 81'],
-        polyfills: true,
-        modernPolyfills: true,
-      }),
+      ...(enableLegacy
+        ? [
+            legacy({
+              targets: ['Chrome >= 81'],
+              polyfills: true,
+              modernPolyfills: true,
+            }),
+          ]
+        : []),
     ],
     resolve: {
       alias: {

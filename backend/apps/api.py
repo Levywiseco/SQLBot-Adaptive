@@ -5,6 +5,10 @@ from apps.dashboard.api import dashboard_api
 from apps.data_training.api import data_training
 from apps.datasource.api import datasource, table_relation, recommended_problem
 from apps.mcp import mcp
+from apps.metrics.api import metric
+from apps.memory.api import memory
+from apps.feedback.api import feedback
+from apps.learning.api import learning
 from apps.system.api import login, user, aimodel, workspace, assistant, parameter, apikey, variable_api
 from apps.terminology.api import terminology
 from apps.settings.api import base
@@ -20,6 +24,10 @@ api_router.include_router(aimodel.router)
 api_router.include_router(base.router)
 api_router.include_router(terminology.router)
 api_router.include_router(data_training.router)
+api_router.include_router(metric.router)
+api_router.include_router(memory.router)
+api_router.include_router(feedback.router)
+api_router.include_router(learning.router)
 api_router.include_router(datasource.router)
 api_router.include_router(chat.router)
 api_router.include_router(dashboard_api.router)

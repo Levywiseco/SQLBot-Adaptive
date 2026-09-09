@@ -1,0 +1,39 @@
+suite:
+  name: adaptive-demo
+  snapshot: adaptive-demo-v1
+  description: Repeatable synthetic development cases backed by adaptive_demo_sales.
+
+cases:
+  - id: demo-net-sales-by-region-august
+    split: dev
+    category: metric
+    question: 按区域统计 2026 年 8 月净销售额
+    identity: admin
+    datasource: Adaptive Demo Sales (synthetic)
+    expected:
+      outcome: success
+      metric: {code: net_sales, version: 1}
+      columns: [region, net_sales]
+      ordered: false
+      float_tolerance: 0.01
+      rows:
+        - {region: 华东, net_sales: 1400.0}
+        - {region: 华南, net_sales: 1080.0}
+        - {region: 华北, net_sales: 2400.0}
+
+  - id: demo-net-sales-follow-up
+    split: holdout
+    category: context
+    question: 那 7 月呢？
+    identity: admin
+    datasource: Adaptive Demo Sales (synthetic)
+    context:
+      previous_question: 按区域统计 2026 年 8 月净销售额
+    expected:
+      outcome: success
+      metric: {code: net_sales, version: 1}
+      columns: [region, net_sales]
+      ordered: false
+      float_tolerance: 0.01
+      rows:
+        - {region: 华东, net_sales: 870.0}

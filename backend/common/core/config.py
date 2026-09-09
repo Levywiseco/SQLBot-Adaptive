@@ -1,3 +1,4 @@
+import logging
 import secrets
 import urllib.parse
 from typing import Annotated, Any, Literal
@@ -7,10 +8,11 @@ from pydantic import (
     BeforeValidator,
     PostgresDsn,
     computed_field,
-    field_validator
+    field_validator,
 )
-from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+DEFAULT_LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s:%(lineno)d - %(message)s"
 
 
 def parse_cors(v: Any) -> list[str] | str:
@@ -69,14 +71,21 @@ class Settings(BaseSettings):
 
     LOG_LEVEL: str = "INFO"  # DEBUG, INFO, WARNING, ERROR
     LOG_DIR: str = "logs"
-    LOG_FORMAT: str = "%(asctime)s - %(name)s - %(levelname)s:%(lineno)d - %(message)s"
+    LOG_FORMAT: str = DEFAULT_LOG_FORMAT
     SQL_DEBUG: bool = False
     BASE_DIR: str = "/opt/sqlbot"
     SCRIPT_DIR: str = f"{BASE_DIR}/scripts"
     UPLOAD_DIR: str = "/opt/sqlbot/data/file"
     SQLBOT_KEY_EXPIRED: int = 100  # License key expiration timestamp, 0 means no expiration
-    
+
     SQLBOT_DOC_ENABLED: bool = True
+
+    # Adaptive rollout controls. Administration and rollback APIs remain
+    # available while answer-time retrieval or new writes are paused.
+    ADAPTIVE_METRICS_IN_ANSWERS: bool = True
+    ADAPTIVE_MEMORY_IN_ANSWERS: bool = True
+    ADAPTIVE_FEEDBACK_WRITES_ENABLED: bool = True
+    ADAPTIVE_SHARED_LEARNING_ACTIVATION_ENABLED: bool = True
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -138,6 +147,10 @@ class Settings(BaseSettings):
                      'PARSE_REASONING_BLOCK_ENABLED',
                      'PG_POOL_PRE_PING',
                      'TABLE_EMBEDDING_ENABLED',
+                     'ADAPTIVE_METRICS_IN_ANSWERS',
+                     'ADAPTIVE_MEMORY_IN_ANSWERS',
+                     'ADAPTIVE_FEEDBACK_WRITES_ENABLED',
+                     'ADAPTIVE_SHARED_LEARNING_ACTIVATION_ENABLED',
                      mode='before')
     @classmethod
     def lowercase_bool(cls, v: Any) -> Any:
@@ -149,6 +162,22 @@ class Settings(BaseSettings):
             elif v_lower == 'false':
                 return False
         return v
+
+    @field_validator('LOG_FORMAT', mode='before')
+    @classmethod
+    def valid_log_format(cls, v: Any) -> str:
+        """Ignore unrelated host values such as ``LOG_FORMAT=json``.
+
+        ``LOG_FORMAT`` is a common process-level environment variable. SQLBot
+        expects a stdlib logging format string, so an unrelated value can make
+        the application fail during import before configuration is visible.
+        """
+        candidate = str(v) if v is not None else DEFAULT_LOG_FORMAT
+        try:
+            logging.Formatter(candidate)
+        except (TypeError, ValueError):
+            return DEFAULT_LOG_FORMAT
+        return candidate
 
 
 settings = Settings()  # type: ignore

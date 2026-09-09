@@ -1,0 +1,16 @@
+{
+  "revenue-by-region": {
+    "outcome": "success",
+    "metric": {"code": "net_sales", "version": 1},
+    "columns": ["region", "net_sales"],
+    "rows": [
+      {"region": "华南", "net_sales": 98000.004},
+      {"region": "华东", "net_sales": 125000.0}
+    ],
+    "sql": "SELECT region, SUM(net_amount) AS net_sales FROM sales GROUP BY region"
+  },
+  "forbidden-payroll": {
+    "outcome": "refusal",
+    "reason": "当前用户没有访问工资数据的权限"
+  }
+}

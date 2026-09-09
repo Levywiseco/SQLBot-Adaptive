@@ -1,0 +1,20 @@
+{
+  "demo-net-sales-by-region-august": {
+    "outcome": "success",
+    "metric": {"code": "net_sales", "version": 1},
+    "columns": ["region", "net_sales"],
+    "rows": [
+      {"region": "华北", "net_sales": 2400.0},
+      {"region": "华东", "net_sales": 1400.0},
+      {"region": "华南", "net_sales": 1080.0}
+    ],
+    "sql": "SELECT region, SUM(amount - discount_amount) AS net_sales FROM adaptive_demo_sales WHERE status = 'paid' AND paid_at >= DATE '2026-08-01' AND paid_at < DATE '2026-09-01' GROUP BY region"
+  },
+  "demo-net-sales-follow-up": {
+    "outcome": "success",
+    "metric": {"code": "net_sales", "version": 1},
+    "columns": ["region", "net_sales"],
+    "rows": [{"region": "华东", "net_sales": 870.0}],
+    "sql": "SELECT region, SUM(amount - discount_amount) AS net_sales FROM adaptive_demo_sales WHERE status = 'paid' AND paid_at >= DATE '2026-07-01' AND paid_at < DATE '2026-08-01' GROUP BY region"
+  }
+}
