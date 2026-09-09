@@ -1,6 +1,6 @@
 # SQLBot Adaptive 二创总览
 
-本分支以 SQLBot `v1.10.1` 为固定基线，增加受治理的指标库、跨会话记忆和反馈学习闭环。开发环境已经在 Windows 上完成无 Docker 运行：Vue 与 FastAPI 运行在 Windows，PostgreSQL 17 与 pgvector 运行在 WSL2 Ubuntu。
+本项目公开地址为 [Levywiseco/SQLBot-Adaptive](https://github.com/Levywiseco/SQLBot-Adaptive)。项目以 SQLBot `v1.10.1` 为固定基线，增加受治理的指标库、跨会话记忆和反馈学习闭环。开发环境已经在 Windows 上完成无 Docker 运行：Vue 与 FastAPI 运行在 Windows，PostgreSQL 17 与 pgvector 运行在 WSL2 Ubuntu。
 
 当前可演示的完整闭环是：发布“净销售额 v1”指标 → 用结构化查询计划预览固定版本、维度、筛选和时间范围生成的只读 SQL → 问数时命中精确版本和必需表 → 新会话召回个人偏好 → 对答案提交纠错 → 生成团队候选 → 管理员审批后成为共享经验 → 撤销后立即停止召回。回答执行详情会记录具体指标版本、记忆版本和追问继承来源。
 

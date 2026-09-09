@@ -16,7 +16,12 @@
 </p>
 <hr/>
 
+> [!IMPORTANT]
+> **SQLBot Adaptive** is a public derivative of [DataEase SQLBot](https://github.com/dataease/SQLBot) `v1.10.1`. It adds a governed metric catalog, cross-session memory, a reviewed feedback-learning loop, and a structured metric SQL compiler. This repository preserves the upstream logo, copyright notices, and modified GPLv3 license. Refer to the official DataEase repository for upstream code and support.
+
 SQLBot is an intelligent data query system based on large language models and RAG, meticulously crafted by the DataEase open-source project team. With SQLBot, users can perform conversational data analysis (ChatBI), quickly extracting the necessary data information and visualizations, and supporting further intelligent analysis.
+
+See the [SQLBot Adaptive overview](adaptive/README.md) for implemented features, Docker-free development, screenshots, verification evidence, and current limitations.
 
 ## How It Works
 
@@ -104,7 +109,7 @@ If you are in an intranet environment, you can deploy SQLBot via the [offline in
 
 ## License
 
-This repository is licensed under the [FIT2CLOUD Open Source License](LICENSE), which is essentially GPLv3 but with some additional restrictions.
+This repository is licensed under the [FIT2CLOUD Open Source License](../LICENSE), which is essentially GPLv3 but with some additional restrictions.
 
 You may conduct secondary development based on the SQLBot source code, but you must adhere to the following:
 

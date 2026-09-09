@@ -17,10 +17,12 @@
 </p>
 <hr/>
 
+> [!IMPORTANT]
+> **SQLBot Adaptive** 是 [DataEase SQLBot](https://github.com/dataease/SQLBot) `v1.10.1` 的公开二创项目，增加受治理的指标库、跨会话记忆、反馈学习闭环和结构化指标 SQL 编译器。项目保留上游 Logo、版权与修改版 GPLv3 许可证；上游代码与问题请以 DataEase 官方仓库为准。
 
 SQLBot 是一款基于大语言模型和 RAG 的智能问数系统，由 DataEase 开源项目组匠心出品。借助 SQLBot，用户可以实现对话式数据分析（ChatBI），快速提炼获取所需的数据信息及可视化图表，并且支持进一步开展智能分析。
 
-> 本分支正在实施指标库、可管理记忆和受治理的反馈学习闭环。开发全景、无 Docker 启动方式、实机截图和验收边界见 [SQLBot Adaptive 二创总览](docs/adaptive/README.md)。
+本仓库的二创能力、无 Docker 启动方式、实机截图、验证结果和当前边界见 [SQLBot Adaptive 二创总览](docs/adaptive/README.md)。
 
 ## 工作原理
 
