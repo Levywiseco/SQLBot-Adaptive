@@ -5,6 +5,21 @@ from typing import Any, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 Aggregation = Literal["SUM", "COUNT", "COUNT_DISTINCT", "AVG", "MIN", "MAX", "CUSTOM"]
+MetricFilterOperator = Literal[
+    "=",
+    "!=",
+    ">",
+    ">=",
+    "<",
+    "<=",
+    "in",
+    "not_in",
+    "between",
+    "like",
+    "not_like",
+    "is_null",
+    "is_not_null",
+]
 
 
 def _clean_string_list(values: list[str]) -> list[str]:
@@ -135,6 +150,68 @@ class MetricPublish(BaseModel):
     @classmethod
     def strip_review_note(cls, value: str) -> str:
         return value.strip()
+
+
+class MetricQueryFilter(BaseModel):
+    field: str = Field(min_length=1, max_length=255)
+    operator: MetricFilterOperator = "="
+    value: Any = None
+
+    @field_validator("field")
+    @classmethod
+    def strip_field(cls, value: str) -> str:
+        return value.strip()
+
+    @field_validator("operator", mode="before")
+    @classmethod
+    def normalize_operator(cls, value: Any) -> Any:
+        if not isinstance(value, str):
+            return value
+        normalized = value.strip().casefold().replace("-", "_").replace(" ", "_")
+        return {"==": "=", "<>": "!="}.get(normalized, normalized)
+
+
+class MetricTimeRange(BaseModel):
+    start: datetime
+    end: datetime
+
+    @model_validator(mode="after")
+    def validate_range(self):
+        if (self.start.tzinfo is None) != (self.end.tzinfo is None):
+            raise ValueError("time_range.start and time_range.end must use the same timezone mode")
+        if self.end <= self.start:
+            raise ValueError("time_range.end must be later than time_range.start")
+        return self
+
+
+class MetricQueryPlanRequest(BaseModel):
+    version_id: int | None = Field(default=None, gt=0)
+    dimensions: list[str] = Field(default_factory=list, max_length=20)
+    filters: list[MetricQueryFilter] = Field(default_factory=list, max_length=50)
+    time_range: MetricTimeRange | None = None
+    limit: int | None = Field(default=None, ge=1, le=10000)
+
+    @field_validator("dimensions")
+    @classmethod
+    def normalize_dimensions(cls, value: list[str]) -> list[str]:
+        return _clean_string_list(value)
+
+
+class MetricQueryPlanRead(BaseModel):
+    metric_id: int
+    metric_code: str
+    metric_name: str
+    metric_version_id: int
+    metric_version: int
+    datasource_id: int
+    datasource_type: str | None
+    dimensions: list[str]
+    applied_filters: list[dict[str, Any]]
+    time_range: dict[str, str] | None
+    required_tables: list[str]
+    sql: str
+    sql_fingerprint: str
+    compiler: str = "metric-plan-v1"
 
 
 class MetricRead(BaseModel):

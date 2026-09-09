@@ -12,6 +12,8 @@ export const metricsApi = {
   detail: (id: number | string) => request.get(`/system/metrics/${id}`),
   create: (data: any) => request.post('/system/metrics', data),
   update: (id: number | string, data: any) => request.put(`/system/metrics/${id}`, data),
+  previewQueryPlan: (id: number | string, data: any) =>
+    request.post(`/system/metrics/${id}/query-plan/preview`, data),
   publish: (id: number | string, versionId: number | string, reviewNote: string) =>
     request.post(`/system/metrics/${id}/versions/${versionId}/publish`, {
       review_note: reviewNote,

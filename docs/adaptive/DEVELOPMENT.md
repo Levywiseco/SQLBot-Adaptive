@@ -95,15 +95,17 @@ uv run --no-sync python ..\scripts\seed-adaptive-learning-demo.py
 
 ```powershell
 Set-Location D:\python\SQLBot-adaptive\backend
-uv run --no-sync pytest ..\tests\test_adaptive_memory.py ..\tests\test_evaluation_runner.py -q
+uv run --no-sync pytest ..\tests\test_adaptive_memory.py ..\tests\test_evaluation_runner.py `
+  ..\tests\test_metric_query_planner.py -q
 uv run --no-sync ruff check apps/metrics apps/memory apps/feedback apps/learning `
   ..\tests\test_adaptive_memory.py ..\tests\test_evaluation_runner.py `
+  ..\tests\test_metric_query_planner.py `
   ..\scripts\seed-adaptive-demo.py ..\scripts\seed-adaptive-learning-demo.py `
   ..\scripts\smoke-adaptive.py --ignore UP045
 uv run --no-sync python -m compileall -q apps/metrics apps/memory apps/feedback apps/learning
 ```
 
-后端运行后执行真实 API 生命周期烟雾测试：
+后端运行后执行真实 API 生命周期烟雾测试。它还会通过查询计划 API 编译“净销售额 v1”，执行 SQL，并断言 2026 年 8 月三个区域的结果与人工基准一致：
 
 ```powershell
 uv run --no-sync python ..\scripts\smoke-adaptive.py

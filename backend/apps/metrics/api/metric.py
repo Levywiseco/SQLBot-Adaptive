@@ -16,8 +16,11 @@ from apps.metrics.schemas.metric import (
     MetricCreate,
     MetricDefinitionUpdate,
     MetricPublish,
+    MetricQueryPlanRead,
+    MetricQueryPlanRequest,
     MetricVersionCreate,
 )
+from apps.metrics.service.query_planner import preview_metric_query_plan
 from apps.system.schemas.permission import SqlbotPermission, require_permissions
 from common.core.deps import CurrentUser, SessionDep
 
@@ -78,6 +81,23 @@ async def new_version(
     payload: MetricVersionCreate,
 ):
     return create_metric_version(session, metric_id, payload, current_user.oid, current_user.id)
+
+
+@router.post("/{metric_id}/query-plan/preview", response_model=MetricQueryPlanRead)
+@require_permissions(permission=SqlbotPermission(role=["ws_admin"]))
+async def preview_query_plan(
+    session: SessionDep,
+    current_user: CurrentUser,
+    metric_id: int,
+    payload: MetricQueryPlanRequest,
+):
+    return preview_metric_query_plan(
+        session,
+        metric_id,
+        payload,
+        current_user.oid,
+        current_user,
+    )
 
 
 @router.post("/{metric_id}/versions/{version_id}/publish")

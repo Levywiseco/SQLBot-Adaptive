@@ -77,7 +77,16 @@ stateDiagram-v2
 
 ## 后续增强点
 
-当前指标模块以结构化版本和受控提示接入已有 Text-to-SQL 主链。下一阶段应增加 `metric_id + version + dimensions + filters + time_range` 查询计划，并在支持范围内由编译器生成指标片段，再对生成 SQL 做粒度、过滤、JOIN 和时间语义校验。
+指标模块以结构化版本和受控提示接入已有 Text-to-SQL 主链。`metric-plan-v1` 已实现 `metric_id + version + dimensions + filters + time_range` 合同：它只接受已发布或历史 superseded 的精确版本，运行时维度/筛选必须属于版本声明，时间范围统一为左闭右开，并从 SQL AST 生成单条只读聚合查询和稳定指纹。当前实现覆盖单表指标；多表 JOIN、复杂比率/余额指标和自然语言到查询计划的结构化提取是下一阶段。
+
+```mermaid
+flowchart LR
+  Q[结构化请求] --> V[版本与权限校验]
+  V --> D[维度/筛选/时间白名单]
+  D --> C[metric-plan-v1 AST 编译]
+  C --> R[只读 SQL 守卫]
+  R --> O[SQL + metric_version_id + 指纹]
+```
 
 当前记忆排序使用关键词、标题、类型和优先级。在完整 embedding 模型可用后，可以在数据库作用域过滤内加入向量候选，并记录模型 ID、维度和重建批次。向量分数只能用于召回排序，不能替代权限检查或业务审核。
 

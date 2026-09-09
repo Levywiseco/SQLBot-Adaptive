@@ -77,6 +77,23 @@ def validate_metric_expression(expression: str, datasource_type: Optional[str] =
 
     if not isinstance(parsed, exp.Select):
         raise _http_error(422, "Metric expression must be a SQL scalar expression")
+    disallowed_clauses = {
+        "from_": "FROM",
+        "where": "WHERE",
+        "group": "GROUP BY",
+        "having": "HAVING",
+        "order": "ORDER BY",
+        "limit": "LIMIT",
+        "offset": "OFFSET",
+        "joins": "JOIN",
+        "with_": "WITH",
+    }
+    used_clauses = [label for key, label in disallowed_clauses.items() if parsed.args.get(key)]
+    if used_clauses:
+        raise _http_error(
+            422,
+            f"Metric expression must not contain query clauses: {', '.join(used_clauses)}",
+        )
     if any(parsed.find(node_type) is not None for node_type in BLOCKED_EXPRESSION_NODES):
         raise _http_error(422, "Metric expression contains a forbidden SQL operation")
     if len(list(parsed.find_all(exp.Select))) != 1:

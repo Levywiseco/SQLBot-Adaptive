@@ -28,6 +28,13 @@ interface MetricForm {
   unit: string
 }
 
+interface PreviewForm {
+  dimensions: string[]
+  timeRange: string[]
+  filtersText: string
+  limit?: number
+}
+
 const { t } = useI18n()
 const loading = ref(false)
 const saving = ref(false)
@@ -39,6 +46,16 @@ const statusFilter = ref('')
 const editVisible = ref(false)
 const historyVisible = ref(false)
 const historyMetric = ref<any>({ versions: [] })
+const previewVisible = ref(false)
+const previewLoading = ref(false)
+const previewMetric = ref<any>({})
+const previewPlan = ref<any>(null)
+const previewForm = ref<PreviewForm>({
+  dimensions: [],
+  timeRange: [],
+  filtersText: '[]',
+  limit: undefined,
+})
 const formRef = ref()
 
 const pageInfo = reactive({ currentPage: 1, pageSize: 10, total: 0 })
@@ -211,6 +228,52 @@ const showHistory = async (row: any) => {
   historyVisible.value = true
 }
 
+const compilePreview = async () => {
+  if (!previewMetric.value.id) return
+  const filters = parseJsonArray(previewForm.value.filtersText, t('metric.runtime_filters'))
+  const timeRange = previewForm.value.timeRange || []
+  if (timeRange.length === 1) {
+    ElMessage.error(t('metric.time_range_pair_required'))
+    return
+  }
+  previewLoading.value = true
+  try {
+    previewPlan.value = await metricsApi.previewQueryPlan(previewMetric.value.id, {
+      version_id: previewMetric.value.current_version_id,
+      dimensions: previewForm.value.dimensions,
+      filters,
+      time_range:
+        timeRange.length === 2
+          ? {
+              start: timeRange[0],
+              end: timeRange[1],
+            }
+          : null,
+      limit: previewForm.value.limit || null,
+    })
+  } finally {
+    previewLoading.value = false
+  }
+}
+
+const openPreview = async (row: any) => {
+  previewLoading.value = true
+  previewVisible.value = true
+  previewPlan.value = null
+  try {
+    previewMetric.value = await metricsApi.detail(row.id)
+    previewForm.value = {
+      dimensions: [...(previewMetric.value.current_version?.dimensions || [])],
+      timeRange: [],
+      filtersText: '[]',
+      limit: undefined,
+    }
+    await compilePreview()
+  } finally {
+    previewLoading.value = false
+  }
+}
+
 const statusType = (status: string) => {
   if (status === 'published') return 'success'
   if (status === 'draft') return 'warning'
@@ -309,11 +372,19 @@ onMounted(async () => {
             {{ formatTimestamp(scope.row.updated_at, 'YYYY-MM-DD HH:mm:ss') }}
           </template>
         </el-table-column>
-        <el-table-column fixed="right" :label="t('ds.actions')" width="220">
+        <el-table-column fixed="right" :label="t('ds.actions')" width="280">
           <template #default="scope">
             <div class="row-actions">
               <el-button link type="primary" @click.stop="showHistory(scope.row)">
                 {{ t('metric.history') }}
+              </el-button>
+              <el-button
+                v-if="scope.row.current_version"
+                link
+                type="primary"
+                @click.stop="openPreview(scope.row)"
+              >
+                {{ t('metric.query_plan') }}
               </el-button>
               <el-button
                 v-if="scope.row.latest_version?.status === 'draft'"
@@ -433,6 +504,76 @@ onMounted(async () => {
       </el-table-column>
     </el-table>
   </el-drawer>
+
+  <el-drawer
+    v-model="previewVisible"
+    :title="t('metric.query_plan_preview')"
+    size="760px"
+    destroy-on-close
+  >
+    <div v-loading="previewLoading" class="preview-panel">
+      <el-alert
+        :title="t('metric.query_plan_description')"
+        :description="t('metric.query_plan_scope')"
+        type="info"
+        :closable="false"
+        show-icon
+      />
+      <div class="preview-metric-heading">
+        <div>
+          <strong>{{ previewMetric.name }}</strong>
+          <span>{{ previewMetric.code }}</span>
+        </div>
+        <el-tag v-if="previewMetric.current_version" type="success">
+          v{{ previewMetric.current_version.version }}
+        </el-tag>
+      </div>
+      <el-form label-position="top">
+        <el-form-item :label="t('metric.dimensions')">
+          <el-select v-model="previewForm.dimensions" multiple clearable>
+            <el-option
+              v-for="dimension in previewMetric.current_version?.dimensions || []"
+              :key="dimension"
+              :label="dimension"
+              :value="dimension"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item :label="t('metric.time_range')">
+          <el-date-picker
+            v-model="previewForm.timeRange"
+            type="datetimerange"
+            value-format="YYYY-MM-DDTHH:mm:ss"
+            start-placeholder="Start"
+            end-placeholder="End"
+          />
+        </el-form-item>
+        <div class="form-grid two-columns">
+          <el-form-item :label="t('metric.runtime_filters')">
+            <el-input v-model="previewForm.filtersText" type="textarea" :rows="4" />
+          </el-form-item>
+          <el-form-item :label="t('metric.result_limit')">
+            <el-input-number v-model="previewForm.limit" :min="1" :max="10000" controls-position="right" />
+          </el-form-item>
+        </div>
+        <el-button type="primary" :loading="previewLoading" @click="compilePreview">
+          {{ t('metric.compile_plan') }}
+        </el-button>
+      </el-form>
+
+      <template v-if="previewPlan">
+        <div class="plan-meta">
+          <el-tag effect="plain">{{ previewPlan.compiler }}</el-tag>
+          <span>metric_version_id: {{ previewPlan.metric_version_id }}</span>
+          <span>{{ t('metric.sql_fingerprint') }}: {{ previewPlan.sql_fingerprint }}</span>
+        </div>
+        <div class="section-title">{{ t('metric.applied_filters') }}</div>
+        <pre class="json-preview">{{ JSON.stringify(previewPlan.applied_filters, null, 2) }}</pre>
+        <div class="section-title">{{ t('metric.compiled_sql') }}</div>
+        <pre class="sql-preview">{{ previewPlan.sql }}</pre>
+      </template>
+    </div>
+  </el-drawer>
 </template>
 
 <style lang="less" scoped>
@@ -486,7 +627,45 @@ onMounted(async () => {
 .field-hint { margin-top: 6px; color: #8f959e; font-size: 12px; line-height: 18px; }
 .history-heading { gap: 10px; margin-bottom: 16px; }
 .history-heading span { color: #8f959e; font-family: monospace; }
+.preview-panel { min-height: 360px; }
+.preview-metric-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e5e6eb;
+  div { display: flex; align-items: baseline; gap: 10px; }
+  span { color: #8f959e; font-family: monospace; }
+}
+.plan-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-top: 22px;
+  color: #646a73;
+  font-family: monospace;
+  font-size: 12px;
+  span:last-child { overflow-wrap: anywhere; }
+}
+.sql-preview,
+.json-preview {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #e5e6eb;
+  border-radius: 8px;
+  background: #f7f8fa;
+  color: #1f2329;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.json-preview { max-height: 180px; }
 :deep(.ed-select) { width: 100%; }
+:deep(.ed-date-editor) { width: 100%; }
 @media (max-width: 900px) {
   .metric-heading, .metric-toolbar { align-items: stretch; flex-direction: column; }
   .metric-toolbar .search-input, .metric-toolbar .ed-select { width: 100%; }

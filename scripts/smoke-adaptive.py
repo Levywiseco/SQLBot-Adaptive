@@ -9,6 +9,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import requests
+from sqlalchemy import text
 from sqlmodel import Session, select
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -209,6 +210,35 @@ def main() -> None:
         assert approved["status"] == "active"
         created_memory_ids.add(int(approved["activated_memory_id"]))
 
+        metric_page = request(
+            "GET",
+            "/system/metrics/page/1/100",
+            token=token,
+        )
+        net_sales = next(item for item in metric_page["data"] if item["code"] == "net_sales")
+        query_plan = request(
+            "POST",
+            f"/system/metrics/{net_sales['id']}/query-plan/preview",
+            token=token,
+            json={
+                "dimensions": ["region"],
+                "time_range": {
+                    "start": "2026-08-01T00:00:00",
+                    "end": "2026-09-01T00:00:00",
+                },
+            },
+        )
+        assert query_plan["metric_version_id"] == net_sales["current_version_id"]
+        assert query_plan["compiler"] == "metric-plan-v1"
+        assert len(query_plan["sql_fingerprint"]) == 64
+        with engine.connect() as connection:
+            metric_rows = connection.execute(text(query_plan["sql"])).mappings().all()
+        assert {row["region"]: float(row["net_sales"]) for row in metric_rows} == {
+            "华东": 1400.0,
+            "华南": 1080.0,
+            "华北": 2400.0,
+        }
+
         with Session(engine) as session:
             prompt, refs = get_memory_prompt(
                 session,
@@ -258,7 +288,10 @@ def main() -> None:
             json={"review_note": "烟雾测试完成后撤销"},
         )
         assert revoked["status"] == "revoked"
-        print("Adaptive API smoke test passed: memory, feedback, review, revocation, and follow-up context")
+        print(
+            "Adaptive API smoke test passed: metric compilation, memory, feedback, "
+            "review, revocation, and follow-up context"
+        )
     finally:
         with Session(engine) as session:
             jobs = session.exec(

@@ -29,6 +29,25 @@ async function main() {
     await page.locator('.login-btn').click()
     await page.waitForURL((url) => !url.hash.includes('/login'), { timeout: 30_000 })
 
+    await page.goto(`${baseUrl}/#/set/metrics`, { waitUntil: 'domcontentloaded' })
+    await page.getByText('指标库', { exact: true }).first().waitFor({ timeout: 20_000 })
+    await page.getByText('净销售额', { exact: true }).waitFor({ timeout: 20_000 })
+    await page.getByRole('button', { name: '查询计划' }).click()
+    await page.getByText('指标查询计划预览', { exact: true }).waitFor({ timeout: 20_000 })
+    await page.getByText('metric-plan-v1', { exact: true }).waitFor({ timeout: 20_000 })
+    await page
+      .locator('.json-preview')
+      .filter({ hasText: 'adaptive_demo_sales.status' })
+      .waitFor({ timeout: 20_000 })
+    await page
+      .locator('.sql-preview')
+      .filter({ hasText: '"adaptive_demo_sales"."amount"' })
+      .waitFor({ timeout: 20_000 })
+    await page.screenshot({
+      path: path.join(root, 'docs', 'adaptive', 'metric-query-plan-smoke.png'),
+      fullPage: true,
+    })
+
     await page.goto(`${baseUrl}/#/memory/index`, { waitUntil: 'domcontentloaded' })
     await page.getByText('我的记忆', { exact: true }).first().waitFor({ timeout: 20_000 })
     await page.getByText('金额展示单位', { exact: true }).waitFor({ timeout: 20_000 })
@@ -65,7 +84,9 @@ async function main() {
     if (meaningfulErrors.length) {
       throw new Error(`Browser console errors: ${meaningfulErrors.join(' | ')}`)
     }
-    console.log('Adaptive UI smoke test passed: My Memory, Learning Center, and feedback controls')
+    console.log(
+      'Adaptive UI smoke test passed: metric query plan, My Memory, Learning Center, and feedback controls'
+    )
   } finally {
     await browser.close()
   }

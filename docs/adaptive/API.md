@@ -12,6 +12,7 @@
 | `PUT /system/metrics/{id}` | 修改定义元数据 | 工作空间管理员 |
 | `POST /system/metrics/{id}/versions` | 从新内容创建下一草稿版本 | 工作空间管理员 |
 | `POST /system/metrics/{id}/versions/{version_id}/publish` | 校验并发布指定版本 | 工作空间管理员 |
+| `POST /system/metrics/{id}/query-plan/preview` | 按精确版本编译受约束的单表只读 SQL | 工作空间管理员 |
 | `DELETE /system/metrics/{id}` | 归档指标 | 工作空间管理员 |
 | `POST /system/metrics/{id}/restore` | 恢复归档指标 | 工作空间管理员 |
 
@@ -35,6 +36,23 @@
   "unit": "元"
 }
 ```
+
+查询计划示例：
+
+```json
+{
+  "version_id": 1,
+  "dimensions": ["region"],
+  "filters": [{"field": "region", "operator": "in", "value": ["华东", "华南"]}],
+  "time_range": {
+    "start": "2026-08-01T00:00:00",
+    "end": "2026-09-01T00:00:00"
+  },
+  "limit": 1000
+}
+```
+
+响应包含 `metric_version_id`、规范化后的 `applied_filters`、左闭右开的时间语义、`sql`、SHA-256 `sql_fingerprint` 和编译器版本。`metric-plan-v1` 只支持恰好一张必需表；未声明的维度、未声明的运行时筛选字段、歧义字段、非标量值和多表指标都会返回 422，不会降级为自由拼接 SQL。
 
 ## 记忆
 
