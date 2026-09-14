@@ -42,7 +42,7 @@ import {
   watch,
 } from 'vue'
 import ChatComponent from '@/views/chat/index.vue'
-import LOGO from '@/assets/svg/logo-custom_small.svg'
+import LOGO from '@/assets/brand/adaptive-mark.png'
 import icon_new_chat_outlined from '@/assets/svg/icon_new_chat_outlined.svg'
 import { useAppearanceStoreWithOut } from '@/stores/appearance'
 import { useRoute } from 'vue-router'

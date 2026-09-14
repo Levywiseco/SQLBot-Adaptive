@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import icon_sidebar_outlined from '@/assets/embedded/icon_sidebar_outlined_nofill.svg'
 import icon_new_chat_outlined from '@/assets/svg/icon_new_chat_outlined.svg'
-import LOGO from '@/assets/svg/logo-custom_small.svg'
+import LOGO from '@/assets/brand/adaptive-mark.png'
 import icon_close_outlined from '@/assets/svg/icon_close_outlined.svg'
 import icon_magnify_outlined from '@/assets/svg/icon_magnify_outlined.svg'
 import { propTypes } from '@/utils/propTypes'

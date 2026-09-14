@@ -6,7 +6,7 @@ import icon_embedded_outlined from '@/assets/embedded/icon_embedded_outlined.svg
 import IconOpeEdit from '@/assets/svg/icon_edit_outlined.svg'
 import Lock from '@/assets/embedded/LOGO-sql.png'
 import { useAppearanceStoreWithOut } from '@/stores/appearance'
-import LOGO from '@/assets/svg/logo-custom_small.svg'
+import LOGO from '@/assets/brand/adaptive-mark.png'
 import { ref, unref, computed } from 'vue'
 import { useClipboard } from '@vueuse/core'
 import { useI18n } from 'vue-i18n'

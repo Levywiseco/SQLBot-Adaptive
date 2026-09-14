@@ -558,6 +558,7 @@
 
 <script setup lang="ts">
 import { ref, unref, reactive, onMounted, nextTick, h, shallowRef } from 'vue'
+import { LicenseGenerator } from '@/services/adaptiveLicense'
 import UserImport from './UserImport.vue'
 import SuccessFilled from '@/assets/svg/gou_icon.svg'
 import icon_replace_outlined from '@/assets/svg/icon_replace_outlined.svg'

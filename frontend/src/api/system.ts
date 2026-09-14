@@ -1,25 +1,26 @@
 import { request } from '@/utils/request'
+import { LicenseGenerator } from '@/services/adaptiveLicense'
 
 export const modelApi = {
   queryAll: (keyword?: string) =>
     request.get('/system/aimodel', { params: keyword ? { keyword } : {} }),
-  add: (data: any) => {
+  add: async (data: any) => {
     const param = data
     if (param.api_key) {
-      param.api_key = LicenseGenerator.sqlbotEncrypt(data.api_key)
+      param.api_key = await LicenseGenerator.sqlbotEncrypt(data.api_key)
     }
     if (param.api_domain) {
-      param.api_domain = LicenseGenerator.sqlbotEncrypt(data.api_domain)
+      param.api_domain = await LicenseGenerator.sqlbotEncrypt(data.api_domain)
     }
     return request.post('/system/aimodel', param)
   },
-  edit: (data: any) => {
+  edit: async (data: any) => {
     const param = data
     if (param.api_key) {
-      param.api_key = LicenseGenerator.sqlbotEncrypt(data.api_key)
+      param.api_key = await LicenseGenerator.sqlbotEncrypt(data.api_key)
     }
     if (param.api_domain) {
-      param.api_domain = LicenseGenerator.sqlbotEncrypt(data.api_domain)
+      param.api_domain = await LicenseGenerator.sqlbotEncrypt(data.api_domain)
     }
     return request.put('/system/aimodel', param)
   },

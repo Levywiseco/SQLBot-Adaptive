@@ -115,12 +115,8 @@
           <div class="welcome-content flex-gap-fallback flex-col">
             <template v-if="isCompletePage">
               <div class="greeting flex-gap-fallback">
-                <img v-if="loginBg" height="32" width="32" :src="loginBg" alt="" />
-                <el-icon v-else size="32"
-                  ><custom_small v-if="appearanceStore.themeColor !== 'default'"></custom_small>
-                  <LOGO_fold v-else></LOGO_fold
-                ></el-icon>
-                <span>{{ appearanceStore.pc_welcome ?? '你好，我是 SQLBot' }}</span>
+                <img height="32" width="32" :src="adaptiveMark" alt="" />
+                <span>{{ appearanceStore.pc_welcome || '你好，我是 一言SQL' }}</span>
               </div>
               <div class="sub">
                 {{
@@ -139,9 +135,7 @@
                 height="30px"
                 alt=""
               />
-              <el-icon v-else size="32">
-                <logo_fold />
-              </el-icon>
+              <img v-else width="32" height="32" :src="adaptiveMark" alt="" />
               <div class="i-am">{{ welcome }}</div>
               <div class="i-can">{{ welcomeDesc }}</div>
             </div>
@@ -171,11 +165,8 @@
               :src="logoAssistant ? logoAssistant : loginBg"
               alt=""
             />
-            <el-icon v-else size="30"
-              ><custom_small v-if="appearanceStore.themeColor !== 'default'"></custom_small>
-              <LOGO_fold v-else></LOGO_fold
-            ></el-icon>
-            <span style="margin-left: 12px">{{ appearanceStore.name }}</span>
+            <img v-else width="30" height="30" :src="adaptiveMark" alt="" />
+            <span style="margin-left: 12px">一言SQL</span>
           </div>
         </div>
         <el-scrollbar
@@ -474,15 +465,13 @@ import FeedbackControls from './FeedbackControls.vue'
 import { dsTypeWithImg } from '@/views/ds/js/ds-type'
 import { useI18n } from 'vue-i18n'
 import { find, forEach } from 'lodash-es'
-import custom_small from '@/assets/svg/logo-custom_small.svg'
-import LOGO_fold from '@/assets/LOGO-fold.svg'
+import adaptiveMark from '@/assets/brand/adaptive-mark.png'
 import icon_new_chat_outlined from '@/assets/svg/icon_new_chat_outlined.svg'
 import icon_sidebar_outlined from '@/assets/svg/icon_sidebar_outlined.svg'
 import icon_sidebar_outlined_nofill from '@/assets/embedded/icon_sidebar_outlined_nofill.svg'
 import icon_replace_outlined from '@/assets/svg/icon_replace_outlined.svg'
 import icon_screen_outlined from '@/assets/svg/icon_screen_outlined.svg'
 import icon_start_outlined from '@/assets/svg/icon_start_outlined.svg'
-import logo_fold from '@/assets/svg/logo-custom_small.svg'
 import icon_send_filled from '@/assets/svg/icon_send_filled.svg'
 import { useAssistantStore } from '@/stores/assistant'
 import { onClickOutside } from '@vueuse/core'

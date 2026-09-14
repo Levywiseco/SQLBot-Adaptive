@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import aboutBg from '@/assets/embedded/LOGO-about.png'
+import AdaptiveLogo from '@/components/brand/AdaptiveLogo.vue'
 
 import { ref, reactive, onMounted } from 'vue'
 import type { F2CLicense } from './index.ts'
@@ -135,7 +135,7 @@ defineExpose({
     modal-class="about-dialog"
   >
     <div class="color-overlay flex-center">
-      <img width="368" height="84" :src="aboutBg" />
+      <AdaptiveLogo class="about-brand" />
     </div>
     <div class="content">
       <div class="item">
@@ -193,7 +193,7 @@ defineExpose({
         </el-upload>
       </div>
     </div>
-    <div class="name">2014-2026 版权所有 © 杭州飞致云信息科技有限公司</div>
+    <div class="name">一言SQL · 智能数据分析工作台</div>
   </el-dialog>
 </template>
 
@@ -202,10 +202,21 @@ defineExpose({
   .color-overlay {
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
-    background: var(--ed-color-primary-1a, #1cba901a);
+    background: linear-gradient(135deg, #eef2ff 0%, #ecfeff 100%);
     border: 1px solid #dee0e3;
     border-bottom: 0;
     height: 180px;
+
+    .about-brand {
+      :deep(.adaptive-brand__mark) {
+        width: 72px;
+        height: 72px;
+      }
+
+      :deep(.adaptive-brand__wordmark) {
+        font-size: 36px;
+      }
+    }
   }
 
   .name {

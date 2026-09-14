@@ -51,6 +51,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, nextTick, computed } from 'vue'
+import { LicenseGenerator } from '@/services/adaptiveLicense'
 import QrcodeLdap from './QrcodeLdap.vue'
 import LdapLoginForm from './LdapLoginForm.vue'
 

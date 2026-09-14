@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { store } from '@/stores/index'
 // import { defaultFont, list } from '@/api/font'
 import { request } from '@/utils/request'
+import adaptiveMark from '@/assets/brand/adaptive-mark.png'
+import { LicenseGenerator } from '@/services/adaptiveLicense'
 
 import { setTitle, setCurrentColor } from '@/utils/utils'
 
@@ -60,7 +62,7 @@ export const useAppearanceStore = defineStore('appearanceStore', {
       login: '',
       slogan: '',
       web: '',
-      name: 'SQLBot',
+      name: '一言SQL',
       foot: 'false',
       footContent: '',
       loaded: false,
@@ -255,15 +257,15 @@ export const useAppearanceStore = defineStore('appearanceStore', {
       // }
       const obj = LicenseGenerator.getLicense()
       if (obj?.status !== 'valid') {
-        setCurrentColor('#1CBA90')
-        document.title = 'SQLBot'
+        setCurrentColor('#4F46E5')
+        document.title = '一言SQL'
         setLinkIcon()
         return
       }
       const resData = await request.get('/system/appearance/ui')
       this.loaded = true
       if (!resData?.length) {
-        setCurrentColor('#1CBA90')
+        setCurrentColor('#4F46E5')
         setLinkIcon()
         return
       }
@@ -289,22 +291,17 @@ export const useAppearanceStore = defineStore('appearanceStore', {
           ? this.customColor
           : this.isBlue
             ? '#3370ff'
-            : '#1CBA90'
+            : '#4F46E5'
       setCurrentColor(currentColor)
       this.bg = data.bg
       this.login = data.login
       this.slogan = data.slogan
       this.showSlogan = data.showSlogan
       this.web = data.web
-      this.name = data.name
-      if (this.name) {
-        document.title = this.name
-        setTitle(this.name)
-      } else {
-        document.title = 'SQLBot'
-        setTitle('SQLBot')
-      }
-      setLinkIcon(this.web)
+      this.name = '一言SQL'
+      document.title = '一言SQL'
+      setTitle('一言SQL')
+      setLinkIcon()
     },
   },
 })
@@ -315,7 +312,7 @@ const setLinkIcon = (linkWeb?: string) => {
     if (linkWeb) {
       link['href'] = baseUrl + linkWeb
     } else {
-      link['href'] = `${location.pathname}LOGO-fold.svg`
+      link['href'] = adaptiveMark
     }
   }
 }

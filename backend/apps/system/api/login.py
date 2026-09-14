@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from apps.system.schemas.logout_schema import LogoutSchema
 from apps.system.schemas.system_schema import BaseUserDTO
 from common.core.deps import SessionDep, Trans
-from common.utils.crypto import sqlbot_decrypt
+from common.utils.crypto import get_transport_public_key, sqlbot_decrypt
 from ..crud.user import authenticate
 from common.core.security import create_access_token
 from datetime import timedelta
@@ -50,3 +50,8 @@ async def logout(session: SessionDep, request: Request, dto: LogoutSchema):
     if dto.origin != 0:
         return await xpack_logout(session, request, dto)
     return None
+
+
+@router.get('/public-key', include_in_schema=False)
+async def public_key():
+    return {'public_key': get_transport_public_key()}

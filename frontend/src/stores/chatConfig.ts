@@ -15,7 +15,7 @@ interface ChatConfig {
 export const chatConfigStore = defineStore('chatConfigStore', {
   state: (): ChatConfig => {
     return {
-      sqlbot_name: 'SQLBot',
+      sqlbot_name: '一言SQL',
       expand_thinking_block: false,
       hide_thinking_block: false,
       limit_rows: true,

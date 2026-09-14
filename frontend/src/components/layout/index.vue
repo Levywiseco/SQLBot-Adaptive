@@ -4,7 +4,7 @@
       class="main-menu"
       :class="{ 'main-menu-sidebar': !topLayout, 'main-menu-topbar': topLayout }"
     >
-      <div class="logo">SQLBot</div>
+      <div class="logo"><AdaptiveLogo /></div>
 
       <!-- <div v-if="!topLayout || !showSubmenu"
            :class="{ 'workspace-area': !topLayout, 'topbar-workspace-area': topLayout }">
@@ -174,6 +174,7 @@ import { useCache } from '@/utils/useCache'
 import { useI18n } from 'vue-i18n'
 import LanguageSelector from '@/components/Language-selector/index.vue'
 import AboutDialog from '@/components/about/index.vue'
+import AdaptiveLogo from '@/components/brand/AdaptiveLogo.vue'
 
 const aboutRef = ref()
 const { t } = useI18n()
@@ -303,12 +304,9 @@ onMounted(() => {
 
     .logo {
       height: 68px;
-      line-height: 68px;
-      font-size: 24px;
-      font-weight: bold;
-      color: var(--el-color-primary);
-      text-align: left;
       margin-left: 24px;
+      display: flex;
+      align-items: center;
     }
 
     .menu-container {

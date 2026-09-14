@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ChatInfo, type ChatMessage } from '@/api/chat.ts'
-import logo_fold from '@/assets/LOGO-fold.svg'
-import { useAppearanceStoreWithOut } from '@/stores/appearance'
-import custom_small from '@/assets/svg/logo-custom_small.svg'
+import adaptiveMark from '@/assets/brand/adaptive-mark.png'
 
 withDefaults(
   defineProps<{
@@ -15,24 +13,13 @@ withDefaults(
     hideAvatar: false,
   }
 )
-const appearanceStore = useAppearanceStoreWithOut()
 </script>
 
 <template>
   <div class="chat-row-container flex-gap-fallback flex-col">
     <div class="chat-row flex-gap-fallback" :class="{ 'right-to-left': msg.role === 'user' }">
       <div v-if="msg.role === 'assistant'" class="ai-avatar">
-        <img
-          v-if="!hideAvatar && appearanceStore.getLogin"
-          :src="logoAssistant ? logoAssistant : appearanceStore.getLogin"
-          alt=""
-          width="28"
-          height="28"
-        />
-        <el-icon v-else-if="!hideAvatar">
-          <logo_fold v-if="appearanceStore.themeColor === 'default'" />
-          <custom_small v-else></custom_small>
-        </el-icon>
+        <img v-if="!hideAvatar" width="28" height="28" :src="logoAssistant || adaptiveMark" alt="" />
       </div>
       <div :class="{ 'row-full': msg.role === 'assistant', 'width-auto': msg.role === 'user' }">
         <slot></slot>

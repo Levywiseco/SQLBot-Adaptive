@@ -18,14 +18,7 @@
     <div class="login-content">
       <div class="login-right">
         <div class="login-logo-icon">
-          <img v-if="loginBg" height="52" :src="loginBg" alt="" />
-          <el-icon v-else size="52"
-            ><custom_small v-if="appearanceStore.themeColor !== 'default'"></custom_small>
-            <LOGO_fold v-else></LOGO_fold
-          ></el-icon>
-          <span style="margin-left: 14px; font-size: 34px; font-weight: 900; color: #485559">{{
-            appearanceStore.name
-          }}</span>
+          <AdaptiveLogo class="login-brand" />
         </div>
         <div v-if="appearanceStore.getShowSlogan" class="welcome">
           {{ appearanceStore.slogan ?? $t('common.intelligent_questioning_platform') }}
@@ -82,11 +75,9 @@ import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useI18n } from 'vue-i18n'
-import custom_small from '@/assets/svg/logo-custom_small.svg'
-import LOGO_fold from '@/assets/LOGO-fold.svg'
-import login_image from '@/assets/embedded/login_image.png'
+import AdaptiveLogo from '@/components/brand/AdaptiveLogo.vue'
+import login_image from '@/assets/brand/adaptive-login.png'
 import { useAppearanceStoreWithOut } from '@/stores/appearance'
-import loginImage from '@/assets/blue/login-image_blue.png'
 import Handler from './xpack/Handler.vue'
 import { toLoginSuccess } from '@/utils/utils'
 import elementResizeDetectorMaker from 'element-resize-detector'
@@ -104,11 +95,7 @@ const activeName = ref('simple')
 
 // const isLdap = computed(() => activeName.value == 'ldap')
 const bg = computed(() => {
-  return appearanceStore.getBg || (appearanceStore.isBlue ? loginImage : login_image)
-})
-
-const loginBg = computed(() => {
-  return appearanceStore.getLogin
+  return login_image
 })
 const loginContainerWidth = ref(0)
 const loginContainer = ref()
@@ -149,7 +136,7 @@ const switchTab = (name: string) => {
 .login-container {
   height: 100vh;
   width: 100vw;
-  background-color: #fff;
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -163,6 +150,7 @@ const switchTab = (name: string) => {
       background-size: 100% 100%;
       width: 100%;
       height: 100%;
+      filter: saturate(0.92) contrast(1.02);
     }
   }
 
@@ -185,6 +173,17 @@ const switchTab = (name: string) => {
         display: flex;
         align-items: center;
         justify-content: center;
+
+        .login-brand {
+          :deep(.adaptive-brand__mark) {
+            width: 52px;
+            height: 52px;
+          }
+
+          :deep(.adaptive-brand__wordmark) {
+            font-size: 34px;
+          }
+        }
       }
       .welcome {
         margin: 8px 0 40px 0;
@@ -195,12 +194,12 @@ const switchTab = (name: string) => {
       }
 
       .login-form {
-        border: 1px solid #dee0e3;
+        border: 1px solid #e0e7ff;
         padding: 40px;
         width: 480px;
         min-height: 392px;
-        border-radius: 12px;
-        box-shadow: 0px 6px 24px 0px #1f232914;
+        border-radius: 16px;
+        box-shadow: 0 18px 48px rgba(30, 41, 100, 0.12);
 
         .form-content_error {
           .ed-form-item--default {

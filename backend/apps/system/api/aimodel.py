@@ -12,13 +12,20 @@ from apps.system.models.system_model import AiModelDetail, AiModelWorkspaceMappi
 from apps.system.schemas.ai_model_schema import AiModelConfigItem, AiModelCreator, AiModelEditor, AiModelGridItem
 from apps.system.schemas.permission import SqlbotPermission, require_permissions
 from common.core.deps import SessionDep, Trans, CurrentUser
-from common.utils.crypto import sqlbot_decrypt
+from common.utils.crypto import sqlbot_decrypt, sqlbot_encrypt
 from common.utils.time import get_timestamp
 from common.utils.utils import SQLBotLogUtil, prepare_model_arg
 
 router = APIRouter(tags=["system_model"], prefix="/system/aimodel")
 from common.audit.models.log_model import OperationType, OperationModules
 from common.audit.schemas.logger_decorator import LogConfig, system_log
+
+
+async def protect_model_secrets(data: dict) -> None:
+    for field in ('api_key', 'api_domain'):
+        value = data.get(field)
+        if value:
+            data[field] = await sqlbot_encrypt(await sqlbot_decrypt(value))
 
 
 @router.post("/status", include_in_schema=False)
@@ -159,6 +166,7 @@ async def add_model(
         creator: AiModelCreator
 ):
     data = creator.model_dump(exclude_unset=True)
+    await protect_model_secrets(data)
     data["config"] = json.dumps([item.model_dump(exclude_unset=True) for item in creator.config_list])
     data.pop("config_list", None)
     detail = AiModelDetail.model_validate(data)
@@ -182,6 +190,7 @@ async def update_model(
 ):
     id = int(editor.id)
     data = editor.model_dump(exclude_unset=True)
+    await protect_model_secrets(data)
     data["config"] = json.dumps([item.model_dump(exclude_unset=True) for item in editor.config_list])
     data.pop("config_list", None)
     db_model = session.get(AiModelDetail, id)

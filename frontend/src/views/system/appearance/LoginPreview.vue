@@ -9,9 +9,9 @@
           </el-icon>
         </div>
         <div class="tab-card active">
-          <div :title="pageName || 'SQLBot'" class="active-span">
+          <div :title="pageName || '一言SQL'" class="active-span">
             <img :src="pageWeb" alt="" />
-            <span>{{ pageName || 'SQLBot' }}</span>
+            <span>{{ pageName || '一言SQL' }}</span>
           </div>
           <el-icon size="10">
             <icon_close_outlined />
@@ -94,10 +94,10 @@
 
 <script lang="ts" setup>
 import icon_close_outlined from '@/assets/svg/icon_close_outlined.svg'
-import LOGO_fold from '@/assets/LOGO-fold.svg'
+import LOGO_fold from '@/assets/brand/adaptive-mark.png'
 import login_image from '@/assets/embedded/login_image.png'
 import logoHeader from '@/assets/blue/LOGO-head_blue.png'
-import custom_small from '@/assets/svg/logo-custom_small.svg'
+import custom_small from '@/assets/brand/adaptive-mark.png'
 import loginImage from '@/assets/blue/login-image_blue.png'
 import { propTypes } from '@/utils/propTypes'
 import { sanitizeHtml } from '@/utils/xss'
@@ -129,7 +129,7 @@ const pageWeb = computed(() => {
   return !props.web
     ? props.isBlue
       ? logoHeader
-      : `${location.pathname}LOGO-fold.svg`
+      : `${location.pathname}LOGO-fold.png`
     : props.web.startsWith('blob')
       ? props.web
       : baseUrl + props.web

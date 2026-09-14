@@ -76,7 +76,7 @@
                   <div class="tips-page">
                     {{
                       t('system.screen_customization_supported', {
-                        msg: loginForm.name || 'SQLBot',
+                        msg: loginForm.name || '一言SQL',
                       })
                     }}
                   </div>
@@ -204,7 +204,7 @@
                   <div class="tips-page">
                     {{
                       t('system.screen_customization_settings', {
-                        msg: loginForm.name || 'SQLBot',
+                        msg: loginForm.name || '一言SQL',
                       })
                     }}
                   </div>
@@ -280,9 +280,9 @@
 </template>
 
 <script lang="ts" setup>
-import logo from '@/assets/LOGO-fold.svg'
-import LOGO_fold from '@/assets/LOGO-fold.svg'
-import custom_small from '@/assets/svg/logo-custom_small.svg'
+import logo from '@/assets/brand/adaptive-mark.png'
+import LOGO_fold from '@/assets/brand/adaptive-mark.png'
+import custom_small from '@/assets/brand/adaptive-mark.png'
 import { ref, unref, reactive, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import {
   type FormInstance,
@@ -346,7 +346,7 @@ const changedItemArray = ref<ConfigItem[]>([])
 
 const loginFormRef = ref<FormInstance>()
 const defaultLoginForm = reactive<LoginForm>({
-  name: 'SQLBot',
+  name: '一言SQL',
   slogan: t('common.intelligent_questioning_platform'),
   foot: 'false',
   showSlogan: '0',

@@ -84,6 +84,7 @@
 
 <script setup lang="ts">
 import { inject, onMounted, reactive, ref, shallowRef } from 'vue'
+import { LicenseGenerator } from '@/services/adaptiveLicense'
 import { useI18n } from 'vue-i18n'
 import { workspaceList } from '@/api/workspace'
 import { request } from '@/utils/request'

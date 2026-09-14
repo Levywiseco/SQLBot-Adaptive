@@ -163,7 +163,7 @@ def generate_openapi_for_lang(lang: str) -> Dict[str, Any]:
 
     # 1. create OpenAPI
     openapi_schema = get_openapi(
-        title="SQLBot API Document" if lang == "en" else "SQLBot API 文档",
+        title="一言SQL API Document" if lang == "en" else "一言SQL API 文档",
         version="1.0.0",
         routes=app.routes,
         tags=localized_tags
@@ -199,7 +199,7 @@ if settings.SQLBOT_DOC_ENABLED:
         from fastapi.openapi.docs import get_swagger_ui_html
         return get_swagger_ui_html(
             openapi_url=f"./openapi.json?lang={lang}",
-            title="SQLBot API Docs",
+            title="一言SQL API Docs",
             swagger_favicon_url="https://fastapi.tiangolo.com/img/favicon.png",
             swagger_js_url="./swagger-ui-bundle.js",
             swagger_css_url="./swagger-ui.css",
@@ -215,8 +215,8 @@ mcp_app.mount("/images", StaticFiles(directory=images_path), name="images")
 
 mcp = FastApiMCP(
     app,
-    name="SQLBot MCP Server",
-    description="SQLBot MCP Server",
+    name="一言SQL MCP Server",
+    description="一言SQL MCP Server",
     describe_all_responses=True,
     describe_full_response_schema=True,
     include_operations=["mcp_datasource_list", "mcp_model_list", "mcp_question", "mcp_start", "mcp_assistant", "mcp_ws_list", "access_token"],
