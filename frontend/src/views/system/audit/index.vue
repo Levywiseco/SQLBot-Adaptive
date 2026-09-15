@@ -125,8 +125,8 @@ const search = () => {
     .getList(pageInfo.currentPage, pageInfo.pageSize, configParams())
     .then((res) => {
       toggleRowLoading.value = true
-      fieldList.value = res.data
-      pageInfo.total = res.total_count
+      fieldList.value = res.items
+      pageInfo.total = res.total
       searchLoading.value = false
     })
     .finally(() => {

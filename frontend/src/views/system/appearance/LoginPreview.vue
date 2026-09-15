@@ -41,10 +41,7 @@
             <div class="login-logo">
               <div class="login-logo-icon">
                 <img v-if="pageLogin" height="52" :src="pageLogin" alt="" />
-                <el-icon v-else size="52"
-                  ><custom_small v-if="themeColor !== 'default'"></custom_small>
-                  <LOGO_fold v-else></LOGO_fold
-                ></el-icon>
+                <img v-else height="52" width="52" :src="adaptiveMark" alt="" />
                 <span
                   style="margin-left: 14px; font-size: 34px; font-weight: 900; color: #485559"
                   >{{ name }}</span
@@ -94,10 +91,9 @@
 
 <script lang="ts" setup>
 import icon_close_outlined from '@/assets/svg/icon_close_outlined.svg'
-import LOGO_fold from '@/assets/brand/adaptive-mark.png'
+import adaptiveMark from '@/assets/brand/adaptive-mark.png'
 import login_image from '@/assets/embedded/login_image.png'
 import logoHeader from '@/assets/blue/LOGO-head_blue.png'
-import custom_small from '@/assets/brand/adaptive-mark.png'
 import loginImage from '@/assets/blue/login-image_blue.png'
 import { propTypes } from '@/utils/propTypes'
 import { sanitizeHtml } from '@/utils/xss'

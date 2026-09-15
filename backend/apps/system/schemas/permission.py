@@ -3,6 +3,7 @@ from functools import wraps
 from inspect import signature
 from typing import Optional
 from fastapi import HTTPException, Request
+from sqlalchemy import or_
 from pydantic import BaseModel
 import re
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -11,6 +12,7 @@ from apps.chat.models.chat_model import Chat
 from apps.datasource.crud.datasource import get_ws_ds
 from apps.datasource.models.datasource import CoreDatasource
 from common.core.db import engine
+from apps.system.models.system_model import UserDatasourceModel
 from apps.system.schemas.system_schema import UserInfoDTO
 
 from common.utils.locale import I18n
@@ -34,11 +36,30 @@ async def get_ws_resource(oid, type) -> list:
         return []     
             
 
-async def check_ws_permission(oid, type, resource) -> bool:
+async def check_ws_permission(current_user: UserInfoDTO, type, resource) -> bool:
     if not resource or (isinstance(resource, list) and len(resource) == 0):
         return True
     
-    resource_id_list = await get_ws_resource(oid, type)
+    resource_id_list = await get_ws_resource(current_user.oid, type)
+    if type in ('ds', 'datasource') and not current_user.isAdmin and current_user.weight <= 0:
+        with Session(engine) as session:
+            resource_id_list = session.exec(
+                select(UserDatasourceModel.datasource_id).where(
+                    UserDatasourceModel.uid == current_user.id,
+                    UserDatasourceModel.datasource_id.in_(resource_id_list),
+                )
+            ).all()
+    if type == 'chat' and not current_user.isAdmin and current_user.weight <= 0:
+        with Session(engine) as session:
+            assigned_ds = select(UserDatasourceModel.datasource_id).where(
+                UserDatasourceModel.uid == current_user.id
+            )
+            resource_id_list = session.exec(
+                select(Chat.id).where(
+                    Chat.oid == current_user.oid,
+                    or_(Chat.origin != 0, Chat.datasource.is_(None), Chat.datasource.in_(assigned_ds)),
+                )
+            ).all()
     if not resource_id_list:
         return False
     if isinstance(resource, list):
@@ -58,8 +79,6 @@ def require_permissions(permission: SqlbotPermission):
                     status_code=401,
                     detail="用户未认证"
                 )
-            current_oid = current_user.oid
-            
             trans = i18n(request)
             
             if current_user.isAdmin and not permission.type:
@@ -72,7 +91,7 @@ def require_permissions(permission: SqlbotPermission):
                 if 'admin' in role_list and not current_user.isAdmin:
                     #raise Exception('no permission to execute, only for admin')
                     raise Exception(trans('i18n_permission.only_admin'))
-                if 'ws_admin' in role_list and current_user.weight == 0 and not current_user.isAdmin:
+                if 'ws_admin' in role_list and current_user.weight <= 0 and not current_user.isAdmin:
                     #raise Exception('no permission to execute, only for workspace admin')
                     raise Exception(trans('i18n_permission.only_ws_admin'))
             if not resource_type:
@@ -86,7 +105,7 @@ def require_permissions(permission: SqlbotPermission):
                     if match := re.match(r"args\[(\d+)\]", keyExpression):
                         index = int(match.group(1))
                         value = bound_args.args[index]
-                        if await check_ws_permission(current_oid, resource_type, value):
+                        if await check_ws_permission(current_user, resource_type, value):
                             return await func(*args, **kwargs)
                         #raise Exception('no permission to execute or resource do not exist!')
                         raise Exception(trans('i18n_permission.permission_resource_limit'))
@@ -97,7 +116,7 @@ def require_permissions(permission: SqlbotPermission):
                 value = bound_args.arguments[parts[0]]
                 for part in parts[1:]:
                     value = getattr(value, part)
-                if await check_ws_permission(current_oid, resource_type, value):
+                if await check_ws_permission(current_user, resource_type, value):
                     return await func(*args, **kwargs)
                 raise Exception(trans('i18n_permission.permission_resource_limit'))
             

@@ -9,18 +9,18 @@
             <div class="theme-color">
               <div class="btn-select">
                 <el-button
-                  :class="[themeColor === 'default' && 'is-active']"
-                  text
-                  @click="themeColorChange('default')"
-                >
-                  {{ $t('system.default_turquoise') }}
-                </el-button>
-                <el-button
                   :class="[themeColor === 'blue' && 'is-active']"
                   text
                   @click="themeColorChange('blue')"
                 >
                   {{ $t('system.tech_blue') }}
+                </el-button>
+                <el-button
+                  :class="[themeColor === 'default' && 'is-active']"
+                  text
+                  @click="themeColorChange('default')"
+                >
+                  {{ $t('system.default_turquoise') }}
                 </el-button>
                 <el-button
                   :class="[themeColor === 'custom' && 'is-active']"
@@ -164,8 +164,7 @@
                     <div class="navigate-head">
                       <div class="header-sql">
                         <img v-if="pageLogin" height="30" width="30" :src="pageLogin" alt="" />
-                        <custom_small v-else-if="themeColor !== 'default'" class="logo" />
-                        <logo v-else></logo>
+                        <img v-else class="logo" height="30" width="30" :src="logo" alt="" />
                         <span style="margin-left: 8px">{{ loginForm.name }}</span>
                       </div>
                       <div class="bottom-sql">
@@ -182,10 +181,7 @@
                     <div class="welcome-content flex-gap-fallback flex-col">
                       <div class="greeting flex-gap-fallback">
                         <img v-if="pageLogin" height="32" width="32" :src="pageLogin" alt="" />
-                        <el-icon v-else size="32"
-                          ><custom_small v-if="themeColor !== 'default'"></custom_small>
-                          <LOGO_fold v-else></LOGO_fold
-                        ></el-icon>
+                        <img v-else height="32" width="32" :src="logo" alt="" />
                         <span>{{ topForm.pc_welcome }}</span>
                       </div>
                       <div class="sub">
@@ -281,8 +277,6 @@
 
 <script lang="ts" setup>
 import logo from '@/assets/brand/adaptive-mark.png'
-import LOGO_fold from '@/assets/brand/adaptive-mark.png'
-import custom_small from '@/assets/brand/adaptive-mark.png'
 import { ref, unref, reactive, onMounted, onUnmounted, nextTick, computed } from 'vue'
 import {
   type FormInstance,
@@ -298,6 +292,7 @@ import { useAppearanceStoreWithOut } from '@/stores/appearance'
 import LoginPreview from './LoginPreview.vue'
 import Person from './Person.vue'
 import { setCurrentColor } from '@/utils/utils'
+import { LicenseGenerator } from '@/services/adaptiveLicense'
 
 // import TinymceEditor from '@/components/rich-text/TinymceEditor.vue'
 import { cloneDeep } from 'lodash-es'
@@ -332,7 +327,7 @@ const basePath = import.meta.env.VITE_API_BASE_URL
 const baseUrl = basePath + '/system/appearance/picture/'
 const fileList = ref<(UploadUserFile & { flag: string })[]>([])
 const navigateBg = ref('dark')
-const themeColor = ref('default')
+const themeColor = ref('blue')
 const customColor = ref('#1CBA90')
 const web = ref('')
 const bg = ref('')
@@ -474,6 +469,10 @@ const init = () => {
   const url = '/system/appearance/ui'
   changedItemArray.value = []
   fileList.value = []
+  if (LicenseGenerator.getLicense()?.status !== 'valid') {
+    nextTick(() => setPageCustomColor('#3370FF'))
+    return
+  }
   request
     .get(url)
     .then((res) => {

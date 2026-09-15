@@ -46,7 +46,7 @@ interface KeyValue {
 export const useAppearanceStore = defineStore('appearanceStore', {
   state: (): AppearanceState => {
     return {
-      themeColor: '',
+      themeColor: 'blue',
       customColor: '',
       navigateBg: '',
       navigate: '',
@@ -257,9 +257,11 @@ export const useAppearanceStore = defineStore('appearanceStore', {
       // }
       const obj = LicenseGenerator.getLicense()
       if (obj?.status !== 'valid') {
+        this.themeColor = 'blue'
         setCurrentColor('#1677FF')
         document.title = '一言SQL'
         setLinkIcon()
+        this.loaded = true
         return
       }
       const resData = await request.get('/system/appearance/ui')

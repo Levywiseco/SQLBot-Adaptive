@@ -54,6 +54,7 @@ from apps.system.crud.aimodel_manage import get_ai_model_list_by_workspace
 from apps.system.crud.assistant import AssistantOutDs, AssistantOutDsFactory, get_assistant_ds
 from apps.system.crud.parameter_manage import get_groups
 from apps.system.crud.user import user_ws_list
+from apps.system.models.system_model import UserDatasourceModel
 from apps.system.schemas.system_schema import AssistantOutDsSchema
 from apps.terminology.curd.terminology import get_terminology_template
 from common.core.config import settings
@@ -757,6 +758,11 @@ class LLMService:
         else:
             stmt = select(CoreDatasource.id, CoreDatasource.name, CoreDatasource.description).where(
                 and_(CoreDatasource.oid == self.oid))
+            if not self.current_user.isAdmin and self.current_user.weight <= 0:
+                stmt = stmt.join(
+                    UserDatasourceModel,
+                    UserDatasourceModel.datasource_id == CoreDatasource.id,
+                ).where(UserDatasourceModel.uid == self.current_user.id)
             _ds_list = [
                 {
                     "id": ds.id,

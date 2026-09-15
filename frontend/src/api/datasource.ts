@@ -8,6 +8,7 @@ export const datasourceApi = {
   add: (data: any) => request.post('/datasource/add', data),
   importToDb: (data: any) => request.post('/datasource/importToDb', data),
   list: () => request.get('/datasource/list'),
+  listByWorkspace: (workspaceId: number) => request.get(`/datasource/ws/${workspaceId}`),
   update: (data: any) => request.post('/datasource/update', data),
   delete: (id: number, name: string) => request.post(`/datasource/delete/${id}/${name}`),
   getTables: (id: number) => request.post(`/datasource/getTables/${id}`),

@@ -356,6 +356,24 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item :label='$t(`permission.data_source`)'>
+        <el-select
+          v-model='state.form.datasource_ids'
+          multiple
+          filterable
+          collapse-tags
+          collapse-tags-tooltip
+          :disabled='!state.form.oid_list.length'
+          :placeholder='$t(`datasource.Please_select`) + $t(`common.empty`) + $t(`permission.data_source`)'
+        >
+          <el-option
+            v-for='item in datasourceOptions'
+            :key='item.id'
+            :label='item.displayName'
+            :value='item.id'
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <template #label>
           <div style="display: flex; align-items: center; height: 22px">
@@ -557,7 +575,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, unref, reactive, onMounted, nextTick, h, shallowRef } from 'vue'
+import { ref, unref, reactive, onMounted, nextTick, h, shallowRef, watch } from 'vue'
 import { LicenseGenerator } from '@/services/adaptiveLicense'
 import UserImport from './UserImport.vue'
 import SuccessFilled from '@/assets/svg/gou_icon.svg'
@@ -584,6 +602,7 @@ import field_value from '@/assets/svg/field_value.svg'
 import { request } from '@/utils/request'
 import { workspaceList } from '@/api/workspace'
 import { variablesApi } from '@/api/variables'
+import { datasourceApi } from '@/api/datasource'
 import { formatTimestamp } from '@/utils/date'
 import { ClickOutside as vClickOutside } from 'element-plus-secondary'
 import icon_warning_filled from '@/assets/svg/icon_warning_filled.svg'
@@ -658,9 +677,42 @@ const defaultForm = {
   status: 1,
   phoneNumber: '',
   oid_list: [],
+  datasource_ids: [],
   system_variables: [],
 }
 const options = ref<any[]>([])
+const datasourceOptions = ref<any[]>([])
+
+let datasourceLoadVersion = 0
+const loadDatasourceOptions = async (workspaceIds: number[] = []) => {
+  const currentVersion = ++datasourceLoadVersion
+  if (!workspaceIds.length) {
+    datasourceOptions.value = []
+    state.form.datasource_ids = []
+    return
+  }
+
+  const workspaceNameMap = new Map(options.value.map((item: any) => [item.id, item.name]))
+  const result = await Promise.all(
+    workspaceIds.map((workspaceId) =>
+      datasourceApi.listByWorkspace(workspaceId).then((items: any[]) =>
+        (items || []).map((item) => ({
+          ...item,
+          displayName: `${item.name}（${workspaceNameMap.get(workspaceId) || workspaceId}）`,
+        }))
+      )
+    )
+  )
+  if (currentVersion !== datasourceLoadVersion) return
+
+  const unique = new Map(result.flat().map((item: any) => [item.id, item]))
+  datasourceOptions.value = Array.from(unique.values())
+  const availableIds = new Set(datasourceOptions.value.map((item) => item.id))
+  state.form.datasource_ids = (state.form.datasource_ids || []).filter((id: number) =>
+    availableIds.has(id)
+  )
+}
+
 const variables = shallowRef<any[]>([])
 const variableValueMap = shallowRef<any>({})
 
@@ -740,6 +792,12 @@ const state = reactive<any>({
     sortOrder: '', // 'ascending' | 'descending' | ''
   },
 })
+
+watch(
+  () => state.form.oid_list,
+  (workspaceIds) => loadDatasourceOptions(workspaceIds || []),
+  { deep: true }
+)
 
 const currentPlatform = ref<any>({})
 const rules = {
@@ -1143,9 +1201,18 @@ const formatVariableValues = () => {
 }
 
 const addTerm = () => {
-  const { account, email, name, oid, status, oid_list } = state.form
+  const { account, email, name, oid, status, oid_list, datasource_ids } = state.form
   userApi
-    .add({ account, email, name, oid, status, oid_list, system_variables: formatVariableValues() })
+    .add({
+      account,
+      email,
+      name,
+      oid,
+      status,
+      oid_list,
+      datasource_ids,
+      system_variables: formatVariableValues(),
+    })
     .then(() => {
       onFormClose()
       handleCurrentChange(1)
@@ -1157,8 +1224,19 @@ const addTerm = () => {
     })
 }
 const editTerm = () => {
-  const { account, id, create_time, email, language, name, oid, oid_list, origin, status } =
-    state.form
+  const {
+    account,
+    id,
+    create_time,
+    email,
+    language,
+    name,
+    oid,
+    oid_list,
+    origin,
+    status,
+    datasource_ids,
+  } = state.form
   userApi
     .edit({
       account,
@@ -1169,6 +1247,7 @@ const editTerm = () => {
       name,
       oid,
       oid_list,
+      datasource_ids,
       origin,
       status,
       system_variables: formatVariableValues(),

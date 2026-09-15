@@ -4,7 +4,8 @@ from fastapi import APIRouter, File, Path, Query, UploadFile
 from sqlmodel import SQLModel, case, or_, select, delete as sqlmodel_delete
 from apps.system.crud.user import check_account_exists, check_email_exists, check_email_format, check_pwd_format, get_db_user, single_delete, user_ws_options
 from apps.system.crud.user_excel import batchUpload, downTemplate, download_error_file
-from apps.system.models.system_model import UserWsModel, WorkspaceModel
+from apps.datasource.models.datasource import CoreDatasource
+from apps.system.models.system_model import UserDatasourceModel, UserWsModel, WorkspaceModel
 from apps.system.models.user import UserModel
 from apps.system.schemas.auth import CacheName, CacheNamespace
 from apps.system.schemas.permission import SqlbotPermission, require_permissions
@@ -204,13 +205,48 @@ async def pager(
         if user_id not in extra_attrs:
             extra_attrs[user_id] = {k: v for k, v in item.items() if k != "ws_oid"}
 
+    datasource_map = defaultdict(list)
+    datasource_rows = session.exec(
+        select(UserDatasourceModel.uid, UserDatasourceModel.datasource_id).where(
+            UserDatasourceModel.uid.in_(uid_list)
+        )
+    ).all()
+    for uid, datasource_id in datasource_rows:
+        datasource_map[uid].append(datasource_id)
+
     # 组合结果
     result = [
         {**extra_attrs[user_id], "oid_list": list(filter(None, oid_list))} 
         for user_id, oid_list in merged.items()
     ]
+    for item in result:
+        item['datasource_ids'] = datasource_map.get(item['id'], [])
     user_page.items = result
     return user_page
+
+def sync_user_datasources(session: SessionDep, uid: int, datasource_ids: Optional[list[int]],
+                          workspace_ids: Optional[list[int]]) -> None:
+    selected_ids = set(datasource_ids or [])
+    allowed_workspace_ids = set(workspace_ids or [])
+    allowed_ids = set()
+    if selected_ids and allowed_workspace_ids:
+        allowed_ids = set(session.exec(
+            select(CoreDatasource.id).where(
+                CoreDatasource.id.in_(selected_ids),
+                CoreDatasource.oid.in_(allowed_workspace_ids),
+            )
+        ).all())
+
+    invalid_ids = selected_ids - allowed_ids
+    if invalid_ids:
+        raise HTTPException(status_code=400, detail='所选数据源不属于该用户的工作空间')
+
+    session.exec(sqlmodel_delete(UserDatasourceModel).where(UserDatasourceModel.uid == uid))
+    session.add_all([
+        UserDatasourceModel(uid=uid, datasource_id=datasource_id)
+        for datasource_id in sorted(allowed_ids)
+    ])
+
 
 def format_user_dict(row) -> dict:
     result_dict = {}
@@ -252,6 +288,9 @@ async def query(session: SessionDep, trans: Trans, id: int = Path(description=f"
     result = UserEditor.model_validate(db_user.model_dump())
     if u_ws_options:
         result.oid_list = [item.id for item in u_ws_options]
+    result.datasource_ids = list(session.exec(
+        select(UserDatasourceModel.datasource_id).where(UserDatasourceModel.uid == id)
+    ).all())
     return result
 
 
@@ -273,7 +312,7 @@ async def create(session: SessionDep, creator: UserCreator, trans: Trans):
     if not check_email_format(creator.email):
         raise Exception(trans('i18n_format_invalid', key = f"{trans('i18n_user.email')} [{creator.email}]"))
     #data = creator.model_dump(exclude_unset=True)
-    data = creator.model_dump()
+    data = creator.model_dump(exclude={'datasource_ids'})
     user_model = UserModel.model_validate(data)
     #user_model.create_time = get_timestamp()
     user_model.language = "zh-CN"
@@ -291,6 +330,7 @@ async def create(session: SessionDep, creator: UserCreator, trans: Trans):
         session.add_all(db_model_list)
         user_model.oid = creator.oid_list[0]   
     session.add(user_model)
+    sync_user_datasources(session, user_model.id, creator.datasource_ids, creator.oid_list)
     return user_model
 
     
@@ -326,7 +366,7 @@ async def update(session: SessionDep, editor: UserEditor, trans: Trans):
         del_stmt = sqlmodel_delete(UserWsModel).where(UserWsModel.uid == editor.id, UserWsModel.oid.in_(oids_to_remove))
         session.exec(del_stmt)
     
-    data = editor.model_dump(exclude_unset=True)
+    data = editor.model_dump(exclude={'datasource_ids'}, exclude_unset=True)
     user_model.sqlmodel_update(data)
     
     user_model.oid = 0
@@ -343,6 +383,7 @@ async def update(session: SessionDep, editor: UserEditor, trans: Trans):
             ]
             session.add_all(db_uws_model_list)
     session.add(user_model)
+    sync_user_datasources(session, user_model.id, editor.datasource_ids, editor.oid_list)
 
 @router.delete("/{id}", summary=f"{PLACEHOLDER_PREFIX}user_del_api", description=f"{PLACEHOLDER_PREFIX}user_del_api")
 @require_permissions(permission=SqlbotPermission(role=['admin']))

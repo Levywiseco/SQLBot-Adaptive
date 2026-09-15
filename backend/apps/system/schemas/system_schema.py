@@ -58,6 +58,7 @@ class UserCreator(BaseUser):
     status: int = Field(default=1, description=f"{PLACEHOLDER_PREFIX}status")
     origin: Optional[int] = Field(default=0, description=f"{PLACEHOLDER_PREFIX}origin")
     oid_list: Optional[list[int]] = Field(default=None, description=f"{PLACEHOLDER_PREFIX}oid")
+    datasource_ids: Optional[list[int]] = Field(default_factory=list, description='用户可访问的数据源')
     system_variables: Optional[List] = Field(default=[])
 
     """ @field_validator("email")

@@ -47,9 +47,10 @@ const emits = defineEmits(['onChatCreated'])
 
 function listDs() {
   searchLoading.value = true
-  ;(selectAssistantDs.value ? request.get('/system/assistant/ds') : datasourceApi.list())
+  return (selectAssistantDs.value ? request.get('/system/assistant/ds') : datasourceApi.list())
     .then((res) => {
-      datasourceList.value = res
+      datasourceList.value = res || []
+      return datasourceList.value
     })
     .finally(() => {
       searchLoading.value = false
@@ -62,8 +63,15 @@ const loading = ref(false)
 const statusLoading = ref(false)
 
 function showDs() {
-  listDs()
-  datasourceConfigVisible.value = true
+  innerDs.value = undefined
+  listDs().then((datasources) => {
+    if (datasources.length === 1) {
+      innerDs.value = datasources[0].id
+      confirmSelectDs()
+      return
+    }
+    datasourceConfigVisible.value = true
+  })
 }
 
 function hideDs() {

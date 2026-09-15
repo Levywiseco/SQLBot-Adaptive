@@ -154,6 +154,10 @@ class TokenMiddleware(BaseHTTPMiddleware):
                     message = trans('i18n_not_exist', msg = trans('i18n_user.account'))
                     raise Exception(message)
                 session_user = UserInfoDTO.model_validate(session_user)
+                # Recompute the built-in administrator flag on every request. Cached
+                # UserInfoDTO values created by an older process may contain the
+                # default False value and incorrectly downgrade the admin account.
+                session_user.isAdmin = session_user.id == 1 and session_user.account == 'admin'
                 if session_user.status != 1:
                     message = trans('i18n_login.user_disable', msg = trans('i18n_concat_admin'))
                     raise Exception(message)

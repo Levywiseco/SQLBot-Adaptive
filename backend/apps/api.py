@@ -9,7 +9,7 @@ from apps.metrics.api import metric
 from apps.memory.api import memory
 from apps.feedback.api import feedback
 from apps.learning.api import learning
-from apps.system.api import login, user, aimodel, workspace, assistant, parameter, apikey, variable_api
+from apps.system.api import login, user, aimodel, workspace, assistant, parameter, apikey, variable_api, audit
 from apps.terminology.api import terminology
 from apps.settings.api import base
 #from audit.api import audit_api
@@ -39,5 +39,4 @@ api_router.include_router(apikey.router)
 api_router.include_router(recommended_problem.router)
 
 api_router.include_router(variable_api.router)
-
-#api_router.include_router(audit_api.router)
+api_router.include_router(audit.router)

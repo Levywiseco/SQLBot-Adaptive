@@ -14,6 +14,7 @@ from apps.db.constant import DB
 from apps.db.db import get_tables, get_fields, exec_sql, check_connection
 from apps.db.engine import get_engine_config, get_engine_conn
 from apps.system.schemas.auth import CacheName, CacheNamespace
+from apps.system.models.system_model import UserDatasourceModel
 from common.core.config import settings
 from common.core.deps import SessionDep, CurrentUser, Trans
 from common.utils.embedding_threads import run_save_table_embeddings, run_save_ds_embeddings
@@ -31,8 +32,13 @@ def get_datasource_list(session: SessionDep, user: CurrentUser, oid: Optional[in
     current_oid = user.oid if user.oid is not None else 1
     if user.isAdmin and oid:
         current_oid = oid
-    return session.exec(
-        select(CoreDatasource).where(CoreDatasource.oid == int(current_oid)).order_by(CoreDatasource.name)).all()
+    statement = select(CoreDatasource).where(CoreDatasource.oid == int(current_oid))
+    if not user.isAdmin and user.weight <= 0:
+        statement = statement.join(
+            UserDatasourceModel,
+            UserDatasourceModel.datasource_id == CoreDatasource.id,
+        ).where(UserDatasourceModel.uid == user.id)
+    return session.exec(statement.order_by(CoreDatasource.name)).all()
 
 
 def get_ds(session: SessionDep, id: int):

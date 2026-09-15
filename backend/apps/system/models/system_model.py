@@ -1,6 +1,7 @@
 from typing import Optional
 
 from pydantic import field_serializer
+from sqlalchemy import UniqueConstraint
 from sqlmodel import BigInteger, Field, Text, SQLModel
 
 from common.core.models import SnowflakeBase
@@ -63,6 +64,16 @@ class UserWsBaseModel(SQLModel):
 
 class UserWsModel(SnowflakeBase, UserWsBaseModel, table=True):
     __tablename__ = "sys_user_ws"
+
+
+class UserDatasourceModel(SnowflakeBase, table=True):
+    __tablename__ = 'sys_user_datasource'
+    __table_args__ = (
+        UniqueConstraint('uid', 'datasource_id', name='uq_sys_user_datasource_uid_ds'),
+    )
+
+    uid: int = Field(nullable=False, sa_type=BigInteger(), index=True)
+    datasource_id: int = Field(nullable=False, sa_type=BigInteger(), index=True)
 
 
 class AssistantBaseModel(SQLModel):
