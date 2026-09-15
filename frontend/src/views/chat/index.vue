@@ -1177,7 +1177,8 @@ onMounted(() => {
     --ed-aside-width: 280px;
     border-radius: 12px 0 0 12px;
 
-    background: rgba(245, 246, 247, 1);
+    background: linear-gradient(180deg, #f5f9ff 0%, #edf4fd 100%);
+    border-right: 1px solid #dbe8f8;
   }
 
   :deep(.chat-record-list) {
@@ -1294,7 +1295,7 @@ onMounted(() => {
 
         :deep(.ed-textarea__inner) {
           padding: 42px 12px 52px 12px;
-          background: #f8f9fa;
+          background: #f3f8ff;
           border-radius: 16px;
           line-height: 24px;
         }

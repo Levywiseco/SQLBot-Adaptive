@@ -91,8 +91,16 @@ const routerList = computed(() => {
     height: 40px !important;
     border-radius: 6px !important;
     margin-bottom: 2px;
+    color: #31547d !important;
+
+    &:hover {
+      color: #125fc2 !important;
+      background-color: rgba(22, 119, 255, 0.08) !important;
+    }
+
     &.is-active {
-      background-color: #fff !important;
+      color: #ffffff !important;
+      background: linear-gradient(90deg, #1677ff, #2b8cff) !important;
       border-radius: 6px;
       font-weight: 500;
     }
@@ -100,19 +108,27 @@ const routerList = computed(() => {
 
   .ed-sub-menu .ed-sub-menu__title {
     border-radius: 6px;
+    color: #31547d !important;
+
+    &:hover {
+      color: #125fc2 !important;
+      background-color: rgba(22, 119, 255, 0.08) !important;
+    }
   }
 
   .ed-sub-menu.is-active:not(.is-opened) {
     .ed-sub-menu__title {
-      background-color: #fff !important;
-      color: var(--ed-color-primary) !important;
+      background: linear-gradient(90deg, #1677ff, #2b8cff) !important;
+      color: #ffffff !important;
       font-weight: 500;
     }
   }
 
   .ed-sub-menu.is-active.is-opened {
     .ed-sub-menu__title {
-      color: var(--ed-color-primary) !important;
+      color: #31547d !important;
+      background: transparent !important;
+      box-shadow: none !important;
       font-weight: 500;
     }
   }

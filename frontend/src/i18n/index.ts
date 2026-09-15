@@ -7,7 +7,6 @@ import elementEnLocale from 'element-plus-secondary/es/locale/lang/en'
 import elementZhLocale from 'element-plus-secondary/es/locale/lang/zh-cn'
 import elementTwLocale from 'element-plus-secondary/es/locale/lang/zh-tw'
 import { useCache } from '@/utils/useCache'
-import { getBrowserLocale } from '@/utils/utils'
 
 const elementKoLocale = elementEnLocale
 const { wsCache } = useCache()
@@ -37,7 +36,7 @@ const getDefaultLocale = () => {
   if (urlLang && isEmbeddedRoute()) {
     return urlLang
   }
-  return wsCache.get('user.language') || getBrowserLocale() || 'zh-CN'
+  return wsCache.get('user.language') || 'zh-CN'
 }
 
 const messages = {

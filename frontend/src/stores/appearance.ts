@@ -257,7 +257,7 @@ export const useAppearanceStore = defineStore('appearanceStore', {
       // }
       const obj = LicenseGenerator.getLicense()
       if (obj?.status !== 'valid') {
-        setCurrentColor('#4F46E5')
+        setCurrentColor('#1677FF')
         document.title = '一言SQL'
         setLinkIcon()
         return
@@ -265,7 +265,7 @@ export const useAppearanceStore = defineStore('appearanceStore', {
       const resData = await request.get('/system/appearance/ui')
       this.loaded = true
       if (!resData?.length) {
-        setCurrentColor('#4F46E5')
+        setCurrentColor('#1677FF')
         setLinkIcon()
         return
       }
@@ -291,7 +291,7 @@ export const useAppearanceStore = defineStore('appearanceStore', {
           ? this.customColor
           : this.isBlue
             ? '#3370ff'
-            : '#4F46E5'
+            : '#1677FF'
       setCurrentColor(currentColor)
       this.bg = data.bg
       this.login = data.login

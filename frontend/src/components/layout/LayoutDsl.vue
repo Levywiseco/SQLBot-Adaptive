@@ -109,7 +109,7 @@ onBeforeMount(() => {
 .system-layout {
   width: 100vw;
   height: 100vh;
-  background-color: #f1f4f3;
+  background: linear-gradient(145deg, #d9e8fb 0%, #eaf3ff 52%, #dcecff 100%);
   display: flex;
 
   @keyframes rotate {
@@ -127,6 +127,72 @@ onBeforeMount(() => {
     padding: 16px;
     position: relative;
     min-width: 240px;
+    color: #173b6c;
+    background: linear-gradient(180deg, #eef6ff 0%, #dceaff 100%);
+    box-shadow: 8px 0 28px rgba(35, 86, 150, 0.1);
+
+    :deep(.adaptive-brand) {
+      color: #163b70;
+
+      .adaptive-brand__wordmark small {
+        color: #087ea4;
+      }
+    }
+
+    :deep(.workspace) {
+      color: #244d7c;
+      background: rgba(255, 255, 255, 0.7);
+      border-color: #bed4f2;
+
+      &:hover,
+      &:active {
+        background: #ffffff;
+      }
+    }
+
+    :deep(.ed-menu-vertical) {
+      --ed-menu-text-color: #31547d;
+      --ed-menu-hover-text-color: #125fc2;
+      --ed-menu-active-color: #ffffff;
+      --ed-menu-hover-bg-color: rgba(22, 119, 255, 0.08);
+
+      .ed-menu-item,
+      .ed-sub-menu__title {
+        color: #31547d !important;
+
+        .ed-icon,
+        svg {
+          color: currentColor !important;
+        }
+      }
+
+      .ed-menu-item:hover,
+      .ed-sub-menu__title:hover {
+        color: #125fc2 !important;
+        background: rgba(22, 119, 255, 0.08) !important;
+      }
+
+      .ed-menu-item.is-active,
+      .ed-sub-menu.is-active:not(.is-opened) .ed-sub-menu__title {
+        color: #ffffff !important;
+        background: linear-gradient(90deg, #1677ff, #2b8cff) !important;
+        box-shadow: 0 6px 16px rgba(22, 119, 255, 0.2);
+      }
+
+      .ed-sub-menu.is-active.is-opened > .ed-sub-menu__title {
+        color: #31547d !important;
+        background: transparent !important;
+        box-shadow: none;
+      }
+    }
+
+    :deep(.person) {
+      color: #244d7c;
+    }
+
+    .fold {
+      color: #31547d;
+    }
 
     .default-sqlbot {
       display: flex;
@@ -169,14 +235,14 @@ onBeforeMount(() => {
         cursor: pointer;
 
         &:not(.collapse) {
-          background: #1f23290a;
-          border: 1px solid #d9dcdf;
+          background: rgba(255, 255, 255, 0.7);
+          border: 1px solid #bed4f2;
         }
         &:hover {
-          background-color: #1f23291a;
+          background-color: #ffffff;
         }
         &:active {
-          background-color: #1f232926;
+          background-color: #d3e6ff;
         }
         .ed-icon {
           margin-right: 4.95px;
@@ -196,11 +262,11 @@ onBeforeMount(() => {
           height: 40px;
           &:hover,
           &:focus {
-            background: #1f23291a;
+            background: rgba(22, 119, 255, 0.09);
           }
 
           &:active {
-            background: #1f232933;
+            background: rgba(22, 119, 255, 0.15);
           }
         }
       }
@@ -241,7 +307,7 @@ onBeforeMount(() => {
 
   .right-main {
     width: calc(100% - 240px);
-    padding: 8px 8px 8px 0;
+    padding: 0;
     max-height: 100vh;
 
     &.right-side-collapse {
@@ -252,9 +318,9 @@ onBeforeMount(() => {
       width: 100%;
       height: 100%;
       padding: 16px 24px;
-      background-color: #fff;
-      border-radius: 12px;
-      box-shadow: 0px 2px 4px 0px #1f23291f;
+      background: linear-gradient(145deg, #fbfdff 0%, #f3f8ff 100%);
+      border-radius: 0;
+      box-shadow: -6px 0 24px rgba(38, 83, 139, 0.08);
       overflow-x: auto;
 
       &:has(.no-padding) {

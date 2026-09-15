@@ -444,7 +444,7 @@ onMounted(() => {
   margin-bottom: 0;
 }
 .sqlbot-other-login {
-  height: 68px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   row-gap: 16px;

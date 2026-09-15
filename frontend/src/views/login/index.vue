@@ -136,7 +136,7 @@ const switchTab = (name: string) => {
 .login-container {
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+  background: linear-gradient(135deg, #dcecff 0%, #edf6ff 52%, #d5e8ff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -146,6 +146,15 @@ const switchTab = (name: string) => {
     height: 100%;
     width: 40%;
     min-width: 400px;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(7, 52, 111, 0.04), rgba(38, 111, 194, 0.14));
+      pointer-events: none;
+    }
     .login-image {
       background-size: 100% 100%;
       width: 100%;
@@ -156,16 +165,47 @@ const switchTab = (name: string) => {
 
   .login-content {
     position: relative;
+    height: 100%;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     flex: 1;
+    background:
+      radial-gradient(circle at 84% 16%, rgba(68, 151, 245, 0.2), transparent 30%),
+      radial-gradient(circle at 12% 88%, rgba(91, 180, 255, 0.14), transparent 28%),
+      linear-gradient(145deg, #f1f7ff 0%, #e5f1ff 52%, #dcecff 100%);
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      border: 1px solid rgba(55, 128, 217, 0.12);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    &::before {
+      width: 420px;
+      height: 420px;
+      top: -220px;
+      right: -110px;
+    }
+
+    &::after {
+      width: 280px;
+      height: 280px;
+      right: 12%;
+      bottom: -190px;
+    }
 
     .login-right {
       display: flex;
       align-items: center;
       flex-direction: column;
       position: relative;
+      z-index: 1;
+      width: 100%;
 
       .login-logo-icon {
         width: auto;
@@ -175,6 +215,8 @@ const switchTab = (name: string) => {
         justify-content: center;
 
         .login-brand {
+          color: #163b70;
+
           :deep(.adaptive-brand__mark) {
             width: 52px;
             height: 52px;
@@ -182,24 +224,44 @@ const switchTab = (name: string) => {
 
           :deep(.adaptive-brand__wordmark) {
             font-size: 34px;
+            color: #163b70;
+
+            small {
+              color: #087ea4;
+            }
           }
         }
       }
       .welcome {
-        margin: 8px 0 40px 0;
+        margin: 10px 0 28px;
         font-weight: 400;
         font-size: 14px;
         line-height: 20px;
-        color: #646a73;
+        color: #58749b;
       }
 
       .login-form {
-        border: 1px solid #e0e7ff;
-        padding: 40px;
-        width: 480px;
-        min-height: 392px;
-        border-radius: 16px;
-        box-shadow: 0 18px 48px rgba(30, 41, 100, 0.12);
+        border: 1px solid rgba(170, 201, 237, 0.62);
+        padding: 34px 40px 32px;
+        width: 440px;
+        min-height: 300px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.94);
+        box-shadow:
+          0 24px 64px rgba(38, 84, 139, 0.16),
+          0 3px 12px rgba(38, 84, 139, 0.06);
+        backdrop-filter: blur(20px);
+
+        :deep(.ed-input__wrapper) {
+          min-height: 44px;
+          border-radius: 10px;
+          box-shadow: 0 0 0 1px #d5e1ef inset;
+          transition: box-shadow 0.2s ease;
+        }
+
+        :deep(.ed-input__wrapper.is-focus) {
+          box-shadow: 0 0 0 1px #337dcc inset, 0 0 0 3px rgba(51, 125, 204, 0.1);
+        }
 
         .form-content_error {
           .ed-form-item--default {
@@ -211,18 +273,28 @@ const switchTab = (name: string) => {
         }
 
         .title {
-          font-weight: 500;
-          font-style: Medium;
+          font-weight: 650;
           font-size: 20px;
           line-height: 28px;
           margin-bottom: 24px;
+          color: #173b68;
         }
 
         .login-btn {
           width: 100%;
-          height: 40px;
+          height: 44px;
           font-size: 16px;
-          border-radius: 6px;
+          font-weight: 600;
+          border: 0;
+          border-radius: 10px;
+          background: linear-gradient(90deg, #2268b8, #398bd7);
+          box-shadow: 0 8px 18px rgba(36, 105, 184, 0.24);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(36, 105, 184, 0.3);
+          }
         }
 
         .agreement {
@@ -234,6 +306,27 @@ const switchTab = (name: string) => {
     }
   }
 }
+
+@media (max-width: 960px) {
+  .login-container {
+    .login-image-content {
+      display: none;
+    }
+
+    .login-content {
+      width: 100%;
+      padding: 24px;
+
+      .login-right {
+        .login-form {
+          width: min(440px, calc(100vw - 48px));
+          padding: 30px 28px 28px;
+        }
+      }
+    }
+  }
+}
+
 .hide-login-container {
   display: none;
 }

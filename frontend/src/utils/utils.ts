@@ -55,7 +55,7 @@ export const getBrowserLocale = () => {
   return language
 }
 export const getLocale = () => {
-  return wsCache.get('user.language') || getBrowserLocale() || 'zh-CN'
+  return wsCache.get('user.language') || 'zh-CN'
 }
 
 export const setSize = (size: any) => {
