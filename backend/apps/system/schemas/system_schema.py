@@ -84,6 +84,10 @@ class PwdEditor(BaseModel):
     new_pwd: str = Field(description=f"{PLACEHOLDER_PREFIX}new_pwd")
 
 
+class AdminPwdEditor(BaseModel):
+    new_pwd: str = Field(description=f"{PLACEHOLDER_PREFIX}new_pwd")
+
+
 class UserWsBase(BaseModel):
     uid_list: list[int] = Field(description=f"{PLACEHOLDER_PREFIX}uid")
     oid: Optional[int] = Field(default=None, description=f"{PLACEHOLDER_PREFIX}oid")

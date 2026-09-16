@@ -105,6 +105,10 @@ async function main() {
     })
 
     await page.goto(`${baseUrl}/#/system/user`, { waitUntil: 'networkidle' })
+    await page.locator('.table-operate .action-btn').nth(1).click()
+    const passwordDialog = page.locator('.ed-dialog').filter({ visible: true }).last()
+    await passwordDialog.locator('input').nth(0).waitFor({ timeout: 20_000 })
+    await passwordDialog.locator('.dialog-footer .ed-button').first().click()
     await page.getByRole('button', { name: '添加用户' }).click()
     await page.getByText('数据源', { exact: true }).last().waitFor({ timeout: 20_000 })
     const workspaceField = page

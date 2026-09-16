@@ -165,61 +165,13 @@
               <el-tooltip
                 :offset="14"
                 effect="dark"
-                :content="$t('common.reset_password')"
+                :content="$t('user.change_password')"
                 placement="top"
               >
-                <el-icon
-                  :ref="
-                    (el: any) => {
-                      setButtonRef(el, scope.row)
-                    }
-                  "
-                  v-click-outside="() => onClickOutside(scope.row)"
-                  class="action-btn"
-                  size="16"
-                >
+                <el-icon class="action-btn" size="16" @click="openPasswordDialog(scope.row)">
                   <IconLock></IconLock>
                 </el-icon>
               </el-tooltip>
-              <el-popover
-                :ref="
-                  (el: any) => {
-                    setPopoverRef(el, scope.row)
-                  }
-                "
-                placement="right"
-                virtual-triggering
-                :width="300"
-                :virtual-ref="scope.row.buttonRef"
-                trigger="click"
-                show-arrow
-              >
-                <div class="reset-pwd-confirm">
-                  <div class="confirm-header">
-                    <span class="icon-span">
-                      <el-icon size="24">
-                        <icon_warning_filled class="svg-icon" />
-                      </el-icon>
-                    </span>
-                    <span class="header-span">{{ t('datasource.the_original_one') }}</span>
-                  </div>
-                  <div class="confirm-content">
-                    <span>{{ defaultPwd }}</span>
-                    <el-button style="margin-left: 4px" text @click="copyText">{{
-                      t('datasource.copy')
-                    }}</el-button>
-                  </div>
-                  <div class="confirm-foot">
-                    <el-button secondary @click="closeResetInfo(scope.row)">{{
-                      t('common.cancel')
-                    }}</el-button>
-                    <el-button type="primary" @click="handleEditPassword(scope.row.id)">
-                      {{ t('datasource.confirm') }}
-                    </el-button>
-                  </div>
-                </div>
-              </el-popover>
-
               <el-tooltip
                 :offset="14"
                 effect="dark"
@@ -538,6 +490,8 @@
       <el-form-item prop="new" :label="t('user.new_password')">
         <el-input
           v-model="password.new"
+          type="password"
+          show-password
           :placeholder="
             $t('datasource.please_enter') + $t('common.empty') + $t('user.new_password')
           "
@@ -545,9 +499,11 @@
           clearable
         />
       </el-form-item>
-      <el-form-item prop="old" :label="t('user.confirm_password')">
+      <el-form-item prop="confirm" :label="t('user.confirm_password')">
         <el-input
-          v-model="password.old"
+          v-model="password.confirm"
+          type="password"
+          show-password
           :placeholder="
             $t('datasource.please_enter') + $t('common.empty') + $t('user.confirm_password')
           "
@@ -575,7 +531,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, unref, reactive, onMounted, nextTick, h, shallowRef, watch } from 'vue'
+import { ref, reactive, onMounted, nextTick, h, shallowRef, watch } from 'vue'
 import { LicenseGenerator } from '@/services/adaptiveLicense'
 import UserImport from './UserImport.vue'
 import SuccessFilled from '@/assets/svg/gou_icon.svg'
@@ -604,7 +560,6 @@ import { workspaceList } from '@/api/workspace'
 import { variablesApi } from '@/api/variables'
 import { datasourceApi } from '@/api/datasource'
 import { formatTimestamp } from '@/utils/date'
-import { ClickOutside as vClickOutside } from 'element-plus-secondary'
 import icon_warning_filled from '@/assets/svg/icon_warning_filled.svg'
 import { useClipboard } from '@vueuse/core'
 
@@ -860,29 +815,36 @@ const handleSyncUser = (ele: any) => {
   syncUserRef.value.open(ele.value, ele.name)
 }
 
+const PWD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+\-={}|:"<>?`\[\];',./])[A-Za-z\d~!@#$%^&*()_+\-={}|:"<>?`\[\];',./]{8,20}$/
+const validateNewPassword = (_rule: any, value: string, callback: (error?: Error) => void) => {
+  if (!value) {
+    callback(new Error(t('datasource.please_enter') + t('common.empty') + t('user.new_password')))
+  } else if (!PWD_REGEX.test(value)) {
+    callback(new Error(t('user.upgrade_pwd.pwd_format_error')))
+  } else {
+    if (password.value.confirm) passwordRef.value?.validateField('confirm')
+    callback()
+  }
+}
+const validateConfirmPassword = (
+  _rule: any,
+  value: string,
+  callback: (error?: Error) => void
+) => {
+  if (!value) {
+    callback(
+      new Error(t('datasource.please_enter') + t('common.empty') + t('user.confirm_password'))
+    )
+  } else if (value !== password.value.new) {
+    callback(new Error(t('user.upgrade_pwd.two_pwd_not_match')))
+  } else {
+    callback()
+  }
+}
 const passwordRules = {
-  new: [
-    {
-      required: true,
-      message: t('datasource.please_enter') + t('common.empty') + t('user.new_password'),
-      trigger: 'blur',
-    },
-  ],
-  old: [
-    {
-      required: true,
-      message: t('datasource.please_enter') + t('common.empty') + t('user.confirm_password'),
-      trigger: 'blur',
-    },
-  ],
-}
-
-const closeResetInfo = (row: any) => {
-  row.popoverRef?.hide()
-  row.resetInfoShow = false
-}
-const setPopoverRef = (el: any, row: any) => {
-  row.popoverRef = el
+  new: [{ validator: validateNewPassword, trigger: 'blur' }],
+  confirm: [{ validator: validateConfirmPassword, trigger: 'blur' }],
 }
 
 const loadData = () => {
@@ -891,16 +853,6 @@ const loadData = () => {
     const idArr = res.filter((card: any) => card.valid && card.enable).map((ele: any) => ele.id)
     platformType.value = platformType.value.filter((card: any) => idArr.includes(card.value))
   })
-}
-
-const copyText = () => {
-  copy(defaultPwd.value)
-    .then(function () {
-      ElMessage.success(t('embedded.copy_successful'))
-    })
-    .catch(function () {
-      ElMessage.error(t('embedded.copy_failed'))
-    })
 }
 
 const copyPassword = () => {
@@ -913,40 +865,29 @@ const copyPassword = () => {
     })
 }
 
-const setButtonRef = (el: any, row: any) => {
-  row.buttonRef = el
-}
-const onClickOutside = (row: any) => {
-  if (row.popoverRef) {
-    unref(row.popoverRef).popperRef?.delayHide?.()
-  }
-}
-
 const multipleTableRef = ref()
 const multipleSelectionAll = ref<any[]>([])
 const dialogTitle = ref('')
 const passwordRef = ref()
 const password = ref({
   new: '',
-  old: '',
+  confirm: '',
   id: '',
 })
 
 const handleClosePassword = () => {
   dialogVisiblePassword.value = false
+  password.value = { new: '', confirm: '', id: '' }
+}
+
+const openPasswordDialog = (row: any) => {
+  password.value = { new: '', confirm: '', id: row.id }
+  dialogVisiblePassword.value = true
+  nextTick(() => passwordRef.value?.clearValidate())
 }
 
 const deleteValues = (index: number) => {
   state.form.system_variables.splice(index, 1)
-}
-
-const handleEditPassword = (id: any) => {
-  userApi.pwd(id).then(() => {
-    ElMessage({
-      type: 'success',
-      message: t('common.password_reset_successful'),
-    })
-  })
 }
 
 /* const handleUserImport = () => {
@@ -956,10 +897,15 @@ const handleEditPassword = (id: any) => {
 const handleConfirmPassword = () => {
   passwordRef.value.validate((val: any) => {
     if (val) {
-      console.info(val)
+      userApi.updatePassword(password.value.id, { new_pwd: password.value.new }).then(() => {
+        ElMessage({
+          type: 'success',
+          message: t('common.save_success'),
+        })
+        handleClosePassword()
+      })
     }
   })
-  dialogVisiblePassword.value = false
 }
 
 const handleSelectionChange = (val: any[]) => {

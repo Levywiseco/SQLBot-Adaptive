@@ -1,6 +1,6 @@
 from collections import defaultdict
 from typing import Optional
-from fastapi import APIRouter, File, Path, Query, UploadFile
+from fastapi import APIRouter, File, HTTPException, Path, Query, UploadFile
 from sqlmodel import SQLModel, case, or_, select, delete as sqlmodel_delete
 from apps.system.crud.user import check_account_exists, check_email_exists, check_email_format, check_pwd_format, get_db_user, single_delete, user_ws_options
 from apps.system.crud.user_excel import batchUpload, downTemplate, download_error_file
@@ -9,7 +9,7 @@ from apps.system.models.system_model import UserDatasourceModel, UserWsModel, Wo
 from apps.system.models.user import UserModel
 from apps.system.schemas.auth import CacheName, CacheNamespace
 from apps.system.schemas.permission import SqlbotPermission, require_permissions
-from apps.system.schemas.system_schema import PwdEditor, UserCreator, UserEditor, UserGrid, UserInfoDTO, UserLanguage, UserStatus, UserWs
+from apps.system.schemas.system_schema import AdminPwdEditor, PwdEditor, UserCreator, UserEditor, UserGrid, UserInfoDTO, UserLanguage, UserStatus, UserWs
 from common.audit.models.log_model import OperationType, OperationModules
 from common.audit.schemas.logger_decorator import LogConfig, system_log
 from common.core.deps import CurrentUser, SessionDep, Trans
@@ -423,6 +423,27 @@ async def pwdReset(session: SessionDep, current_user: CurrentUser, trans: Trans,
     db_user: UserModel = get_db_user(session=session, user_id=id)
     db_user.password = default_md5_pwd()
     session.add(db_user)
+
+
+@router.put("/pwd/{id}", summary=f"{PLACEHOLDER_PREFIX}update_pwd", description=f"{PLACEHOLDER_PREFIX}update_pwd")
+@require_permissions(permission=SqlbotPermission(role=['admin']))
+@clear_cache(namespace=CacheNamespace.AUTH_INFO, cacheName=CacheName.USER_INFO, keyExpression="id")
+@system_log(LogConfig(operation_type=OperationType.UPDATE_PWD, module=OperationModules.USER, resource_id_expr="id"))
+async def admin_pwd_update(
+    session: SessionDep,
+    current_user: CurrentUser,
+    trans: Trans,
+    editor: AdminPwdEditor,
+    id: int = Path(description=f"{PLACEHOLDER_PREFIX}uid"),
+):
+    if not check_pwd_format(editor.new_pwd):
+        raise Exception(trans('i18n_format_invalid', key=trans('i18n_user.password')))
+    db_user: UserModel = get_db_user(session=session, user_id=id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail=trans('i18n_not_exist', msg=trans('i18n_user.account')))
+    db_user.password = md5pwd(editor.new_pwd)
+    session.add(db_user)
+    return {'id': id}
 
 @router.put("/pwd", summary=f"{PLACEHOLDER_PREFIX}update_pwd", description=f"{PLACEHOLDER_PREFIX}update_pwd")
 @clear_cache(namespace=CacheNamespace.AUTH_INFO, cacheName=CacheName.USER_INFO, keyExpression="current_user.id")
