@@ -453,7 +453,7 @@ onMounted(() => {
     border-top: 1px solid #1f232926;
     margin: 9px 0 10px 0;
     ::v-deep(.ed-divider__text) {
-      color: #8f959e;
+      color: #73849a;
       font-size: 12px;
       font-weight: 400;
     }

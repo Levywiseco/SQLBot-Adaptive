@@ -328,7 +328,7 @@ const baseUrl = basePath + '/system/appearance/picture/'
 const fileList = ref<(UploadUserFile & { flag: string })[]>([])
 const navigateBg = ref('dark')
 const themeColor = ref('blue')
-const customColor = ref('#1CBA90')
+const customColor = ref('#1677FF')
 const web = ref('')
 const bg = ref('')
 const login = ref('')
@@ -811,7 +811,7 @@ onUnmounted(() => {
           border-radius: 6px;
 
           .is-active {
-            background: var(--ed-color-primary-1a, #1cba901a);
+            background: var(--ed-color-primary-1a, #1677ff1a);
             font-weight: 500;
           }
 
@@ -952,15 +952,15 @@ onUnmounted(() => {
                   line-height: 24px;
                   font-weight: 500;
 
-                  --ed-button-text-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-                  --ed-button-hover-text-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-                  --ed-button-active-text-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+                  --ed-button-text-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+                  --ed-button-hover-text-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+                  --ed-button-active-text-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
                   --ed-button-bg-color: rgba(248, 249, 250, 1);
-                  --ed-button-hover-bg-color: var(--ed-color-primary-1a, #1cba901a);
+                  --ed-button-hover-bg-color: var(--ed-color-primary-1a, #1677ff1a);
                   --ed-button-border-color: rgba(217, 220, 223, 1);
-                  --ed-button-hover-border-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-                  --ed-button-active-bg-color: var(--ed-color-primary-33, #1cba9033);
-                  --ed-button-active-border-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+                  --ed-button-hover-border-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+                  --ed-button-active-bg-color: var(--ed-color-primary-33, #1677ff33);
+                  --ed-button-active-border-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
                 }
               }
             }
@@ -1012,7 +1012,7 @@ onUnmounted(() => {
                 font-weight: 400;
                 line-height: 18px;
                 white-space: pre-wrap;
-                color: #8f959e;
+                color: #73849a;
               }
             }
 
@@ -1021,7 +1021,7 @@ onUnmounted(() => {
                 font-size: 14px;
                 font-weight: 400;
                 line-height: 22px;
-                color: #8f959e;
+                color: #73849a;
               }
 
               .appearance-radio-item {

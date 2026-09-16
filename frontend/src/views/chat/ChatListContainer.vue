@@ -272,7 +272,7 @@ function onChatRenamed(chat: Chat) {
 
 <style scoped lang="less">
 .chat-container-right-container {
-  background: rgba(245, 246, 247, 1);
+  background: #f4f8fd;
 
   height: 100%;
 
@@ -283,7 +283,7 @@ function onChatRenamed(chat: Chat) {
     font-size: 18px;
 
     &:hover {
-      background: rgba(31, 35, 41, 0.1);
+      background: rgba(22, 119, 255, 0.08);
     }
   }
 
@@ -319,21 +319,21 @@ function onChatRenamed(chat: Chat) {
       font-size: 16px;
       font-weight: 500;
 
-      --ed-button-text-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-      --ed-button-bg-color: var(--ed-color-primary-1a, #1cba901a);
-      --ed-button-border-color: var(--ed-color-primary-60, #a4e3d3);
-      --ed-button-hover-bg-color: var(--ed-color-primary-80, #d2f1e9);
-      --ed-button-hover-text-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-      --ed-button-hover-border-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-      --ed-button-active-bg-color: var(--ed-color-primary-60, #a4e3d3);
-      --ed-button-active-border-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+      --ed-button-text-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+      --ed-button-bg-color: var(--ed-color-primary-1a, #1677ff1a);
+      --ed-button-border-color: var(--ed-color-primary-60, #9fc7ff);
+      --ed-button-hover-bg-color: var(--ed-color-primary-80, #d9e9ff);
+      --ed-button-hover-text-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+      --ed-button-hover-border-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+      --ed-button-active-bg-color: var(--ed-color-primary-60, #9fc7ff);
+      --ed-button-active-border-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
     }
 
     .search {
       height: 32px;
       width: 100%;
       :deep(.ed-input__wrapper) {
-        background-color: #f5f6f7;
+        background-color: #ffffff;
       }
     }
   }

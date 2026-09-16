@@ -175,8 +175,8 @@ onBeforeMount(() => {
       .ed-menu-item.is-active,
       .ed-sub-menu.is-active:not(.is-opened) .ed-sub-menu__title {
         color: #ffffff !important;
-        background: linear-gradient(90deg, #1677ff, #2b8cff) !important;
-        box-shadow: 0 6px 16px rgba(22, 119, 255, 0.2);
+        background: linear-gradient(90deg, #246fd6, #3c86e8) !important;
+        box-shadow: 0 5px 14px rgba(22, 119, 255, 0.14);
       }
 
       .ed-sub-menu.is-active.is-opened > .ed-sub-menu__title {

@@ -778,7 +778,7 @@ const handleCurrentChange = (val: number) => {
       border-radius: 6px;
 
       .is-active {
-        background: var(--ed-color-primary-1a, #1cba901a);
+        background: var(--ed-color-primary-1a, #1677ff1a);
       }
 
       .ed-button:not(.is-active) {
@@ -811,14 +811,14 @@ const handleCurrentChange = (val: number) => {
 
     .preview-or-schema {
       .system-flag {
-        background-color: var(--ed-color-primary-33, #1cba9033);
+        background-color: var(--ed-color-primary-33, #1677ff33);
         border-radius: 6px;
         height: 16px;
         line-height: 16px;
         padding: 0 4px;
         font-size: 10px;
         margin-left: 4px;
-        color: var(--ed-color-primary-15-d, #189e7a);
+        color: var(--ed-color-primary-15-d, #125fc2);
       }
 
       &:not(:has(.ellipsis)) {

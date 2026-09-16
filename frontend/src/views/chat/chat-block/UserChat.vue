@@ -79,7 +79,7 @@ const copyCode = () => {
   white-space: pre-wrap;
 
   .prefix-title {
-    color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+    color: var(--ed-color-primary, rgba(22, 119, 255, 1));
     white-space: nowrap;
   }
 }

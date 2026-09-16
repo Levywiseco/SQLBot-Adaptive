@@ -44,7 +44,7 @@ const list = computed(() => (props.item?.message as Array<any>) ?? [])
 .metric-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .metric-card { padding: 14px 16px; border: 1px solid #dee0e3; border-radius: 12px; background: #fff; }
 .metric-title { display: flex; align-items: center; gap: 8px; }
-.metric-title code { color: #8f959e; font-size: 12px; }
+.metric-title code { color: #73849a; font-size: 12px; }
 .metric-card p { margin: 8px 0 0; color: #646a73; line-height: 20px; }
-.metric-tables { margin-top: 8px; color: #8f959e; font-size: 12px; }
+.metric-tables { margin-top: 8px; color: #73849a; font-size: 12px; }
 </style>

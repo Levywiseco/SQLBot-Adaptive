@@ -99,7 +99,7 @@ const handleDefaultChatChange = (val: any) => {
         display: flex;
         align-items: center;
         padding-left: 8px;
-        color: #8f959e;
+        color: #73849a;
       }
     }
     .popover-item {
@@ -163,8 +163,8 @@ const handleDefaultChatChange = (val: any) => {
   }
 
   &.active {
-    background: var(--ed-color-primary-1a, rgba(28, 186, 144, 0.1));
-    color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+    background: var(--ed-color-primary-1a, rgba(22, 119, 255, 0.1));
+    color: var(--ed-color-primary, rgba(22, 119, 255, 1));
   }
 }
 </style>

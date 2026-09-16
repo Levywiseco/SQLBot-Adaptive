@@ -38,7 +38,7 @@ const customSet = reactive({
   name: '',
   welcome: t('embedded.i_am_sqlbot'),
   welcome_desc: t('embedded.data_analysis_now'),
-  theme: '#1CBA90',
+  theme: '#1677FF',
   header_font_color: '#1F2329',
 }) as { [key: string]: any }
 

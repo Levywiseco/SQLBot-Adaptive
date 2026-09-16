@@ -109,16 +109,17 @@ onMounted(() => {
   .thinking-btn {
     height: 32px;
     padding: 5px 12px;
+    border-radius: 8px;
 
-    --ed-button-text-color: rgba(31, 35, 41, 1);
-    --ed-button-hover-text-color: var(--ed-button-text-color);
-    --ed-button-active-text-color: var(--ed-button-text-color);
-    --ed-button-bg-color: rgba(255, 255, 255, 1);
-    --ed-button-hover-bg-color: rgba(245, 246, 247, 1);
-    --ed-button-active-bg-color: rgba(239, 240, 241, 1);
-    --ed-button-border-color: rgba(217, 220, 223, 1);
-    --ed-button-hover-border-color: var(--ed-button-border-color);
-    --ed-button-active-border-color: var(--ed-button-border-color);
+    --ed-button-text-color: #315f96;
+    --ed-button-hover-text-color: #125fc2;
+    --ed-button-active-text-color: #0d4fa6;
+    --ed-button-bg-color: rgba(235, 244, 255, 0.88);
+    --ed-button-hover-bg-color: #e1efff;
+    --ed-button-active-bg-color: #d7e9ff;
+    --ed-button-border-color: #c9ddf6;
+    --ed-button-hover-border-color: #9fc5f2;
+    --ed-button-active-border-color: #7fb0e9;
 
     --ed-button-font-weight: 400;
 
@@ -140,8 +141,11 @@ onMounted(() => {
     margin-top: 8px;
     display: flex;
     flex-direction: column;
-    padding-left: 9px;
-    border-left: 1px solid rgba(31, 35, 41, 0.15);
+    padding: 12px 14px 12px 16px;
+    border: 1px solid #d8e7f8;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(246, 250, 255, 0.96), rgba(237, 245, 255, 0.92));
+    box-shadow: inset 3px 0 0 #6ca7e8, 0 4px 14px rgba(45, 94, 153, 0.06);
     --gap-size: 8px;
     gap: 8px;
 
@@ -150,17 +154,23 @@ onMounted(() => {
       line-height: 22px;
       font-weight: 400;
       font-size: 14px;
-      color: rgba(143, 149, 158, 1) !important;
+      color: #5f7188 !important;
 
-      .markdown-body {
-        color: rgba(143, 149, 158, 1) !important;
+      :deep(.markdown-body) {
+        color: #5f7188 !important;
+        background: transparent !important;
         line-height: 22px;
         font-weight: 400;
         font-size: 14px;
+
+        pre,
+        code {
+          background-color: rgba(218, 233, 251, 0.68) !important;
+        }
       }
 
       padding-bottom: 8px;
-      border-bottom: 1px solid rgba(31, 35, 41, 0.15);
+      border-bottom: 1px solid rgba(87, 132, 185, 0.16);
 
       &:last-child {
         padding-bottom: unset;

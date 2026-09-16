@@ -276,7 +276,7 @@ onMounted(async () => {
 .memory-toolbar .ed-select { width: 190px; }
 .memory-table { background: #fff; border: 1px solid #e5e6eb; border-radius: 0 0 10px 10px; overflow: hidden; }
 .memory-title { font-weight: 500; color: #1f2329; }
-.muted, .field-hint { color: #8f959e; font-size: 12px; margin-top: 4px; }
+.muted, .field-hint { color: #73849a; font-size: 12px; margin-top: 4px; }
 .row-actions { gap: 10px; }
 .action-icon { cursor: pointer; color: #646a73; }
 .action-icon:hover { color: var(--ed-color-primary); }

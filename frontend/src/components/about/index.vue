@@ -225,7 +225,7 @@ defineExpose({
     line-height: 22px;
     text-align: center;
     margin-top: 16px;
-    color: #8f959e;
+    color: #73849a;
   }
 
   .content {

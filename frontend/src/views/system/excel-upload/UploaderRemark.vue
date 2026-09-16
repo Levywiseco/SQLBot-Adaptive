@@ -320,7 +320,7 @@ const submitUpload = () => {
     flex-wrap: wrap;
     align-items: center;
     line-height: 40px;
-    background: var(--ed-color-primary-80, #d2f1e9);
+    background: var(--ed-color-primary-80, #d9e9ff);
     border-radius: 6px;
     padding-left: 10px;
     .icon-span {

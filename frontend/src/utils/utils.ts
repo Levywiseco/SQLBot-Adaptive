@@ -184,6 +184,12 @@ export const setCurrentColor = (color: any, element: HTMLElement = document.docu
   element.style.setProperty('--ed-color-primary', currentColor)
   element.style.setProperty('--van-blue', currentColor)
   element.style.setProperty(
+    '--ed-color-primary-light-7',
+    colorFunctions
+      .mix(new colorTree('ffffff'), new colorTree(currentColor.substr(1)), { value: 70 })
+      .toRGB()
+  )
+  element.style.setProperty(
     '--ed-color-primary-light-5',
     colorFunctions
       .mix(new colorTree('ffffff'), new colorTree(currentColor.substr(1)), { value: 40 })

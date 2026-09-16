@@ -478,7 +478,7 @@ defineExpose({
   .empty-text {
     padding: 20px 0;
     text-align: center;
-    color: #8f959e;
+    color: #73849a;
   }
 
   .bottom-select {

@@ -424,7 +424,7 @@ useEmitt({
         font-weight: 400;
         font-size: 14px;
         line-height: 22px;
-        color: #8f959e;
+        color: #73849a;
         cursor: default;
       }
 

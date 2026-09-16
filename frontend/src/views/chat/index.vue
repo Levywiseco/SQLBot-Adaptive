@@ -1309,7 +1309,7 @@ onMounted(() => {
             border-radius: 16px;
 
             &::placeholder {
-              color: #8f959e;
+              color: #73849a;
             }
           }
         }
@@ -1463,15 +1463,15 @@ onMounted(() => {
       line-height: 24px;
       font-weight: 500;
 
-      --ed-button-text-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-      --ed-button-hover-text-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-      --ed-button-active-text-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-      --ed-button-bg-color: rgba(248, 249, 250, 1);
-      --ed-button-hover-bg-color: var(--ed-color-primary-1a, #1cba901a);
-      --ed-button-border-color: rgba(217, 220, 223, 1);
-      --ed-button-hover-border-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
-      --ed-button-active-bg-color: var(--ed-color-primary-33, #1cba9033);
-      --ed-button-active-border-color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+      --ed-button-text-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+      --ed-button-hover-text-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+      --ed-button-active-text-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+      --ed-button-bg-color: #f8fbff;
+      --ed-button-hover-bg-color: var(--ed-color-primary-1a, #1677ff1a);
+      --ed-button-border-color: #d8e5f2;
+      --ed-button-hover-border-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
+      --ed-button-active-bg-color: var(--ed-color-primary-33, #1677ff33);
+      --ed-button-active-border-color: var(--ed-color-primary, rgba(22, 119, 255, 1));
     }
   }
 }

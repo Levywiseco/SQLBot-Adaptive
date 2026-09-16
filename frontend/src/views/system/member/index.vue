@@ -520,7 +520,7 @@ const handleCurrentChange = (val: number) => {
           top: 0;
           width: calc(100% - 1px);
           height: calc(100% - 2px);
-          background: var(--ed-color-primary-1a, #1cba901a);
+          background: var(--ed-color-primary-1a, #1677ff1a);
           border: 1px solid var(--ed-color-primary);
           border-bottom-right-radius: 6px;
           border-top-right-radius: 6px;
@@ -539,7 +539,7 @@ const handleCurrentChange = (val: number) => {
       line-height: 22px;
     }
     .account {
-      color: #8f959e;
+      color: #73849a;
       font-size: 12px;
       line-height: 20px;
     }
@@ -548,7 +548,7 @@ const handleCurrentChange = (val: number) => {
       font-weight: 400;
       font-size: 14px;
       line-height: 22px;
-      color: #8f959e;
+      color: #73849a;
     }
   }
 }

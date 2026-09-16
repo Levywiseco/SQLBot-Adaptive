@@ -369,7 +369,7 @@ defineExpose({
     }
   }
   .font12 {
-    color: #8f959e !important;
+    color: #73849a !important;
     font-family: var(--de-custom_font, 'PingFang');
     font-size: 14px;
     font-style: normal;
@@ -382,7 +382,7 @@ defineExpose({
     height: 40px;
     align-items: center;
     line-height: 40px;
-    background: var(--ed-color-primary-80, #d2f1e9);
+    background: var(--ed-color-primary-80, #d9e9ff);
     border-radius: 6px;
     padding-left: 10px;
     .icon-span {
@@ -426,7 +426,7 @@ defineExpose({
           font-weight: 400;
           font-size: 12px;
           line-height: 20px;
-          color: #8f959e;
+          color: #73849a;
         }
       }
 

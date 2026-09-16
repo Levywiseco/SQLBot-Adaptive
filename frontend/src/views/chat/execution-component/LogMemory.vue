@@ -38,6 +38,6 @@ const list = computed(() => (props.item?.message as Array<any>) ?? [])
 .memory-list { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .memory-card { padding: 14px 16px; border: 1px solid #dee0e3; border-radius: 12px; background: #fff; }
 .memory-title { display: flex; align-items: center; gap: 8px; }
-.memory-title span { color: #8f959e; font-size: 12px; }
+.memory-title span { color: #73849a; font-size: 12px; }
 .memory-meta { margin-top: 6px; }
 </style>

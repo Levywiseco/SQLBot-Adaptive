@@ -100,7 +100,7 @@ const routerList = computed(() => {
 
     &.is-active {
       color: #ffffff !important;
-      background: linear-gradient(90deg, #1677ff, #2b8cff) !important;
+      background: linear-gradient(90deg, #246fd6, #3c86e8) !important;
       border-radius: 6px;
       font-weight: 500;
     }
@@ -118,7 +118,7 @@ const routerList = computed(() => {
 
   .ed-sub-menu.is-active:not(.is-opened) {
     .ed-sub-menu__title {
-      background: linear-gradient(90deg, #1677ff, #2b8cff) !important;
+      background: linear-gradient(90deg, #246fd6, #3c86e8) !important;
       color: #ffffff !important;
       font-weight: 500;
     }
@@ -138,15 +138,15 @@ const routerList = computed(() => {
   }
 }
 .ed-popper.is-light:has(.ed-menu--popup) {
-  border: 1px solid #dee0e3;
+  border: 1px solid #d8e5f2;
   border-radius: 6px;
-  box-shadow: 0px 4px 8px 0px #1f23291a;
-  background: #eff1f0;
+  box-shadow: 0 8px 24px rgba(35, 86, 150, 0.14);
+  background: #f4f8fd;
   overflow: hidden;
 }
 .ed-menu--popup {
   padding: 8px;
-  background: #eff1f0;
+  background: #f4f8fd;
 
   .ed-menu-item {
     padding: 9px 16px;

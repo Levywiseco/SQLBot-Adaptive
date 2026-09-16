@@ -613,7 +613,7 @@ onMounted(async () => {
   overflow: hidden;
 }
 .metric-name { font-weight: 500; color: #1f2329; }
-.metric-code, .muted { color: #8f959e; font-size: 12px; margin-top: 3px; }
+.metric-code, .muted { color: #73849a; font-size: 12px; margin-top: 3px; }
 .draft-tag { margin-left: 7px; }
 .row-actions { gap: 8px; }
 .action-icon { cursor: pointer; color: #646a73; }
@@ -624,9 +624,9 @@ onMounted(async () => {
 .two-columns { grid-template-columns: 1fr 1fr; }
 .three-columns { grid-template-columns: 1fr 1fr 1fr; }
 .section-title { margin: 22px 0 14px; padding-top: 18px; border-top: 1px solid #e5e6eb; font-size: 16px; font-weight: 500; }
-.field-hint { margin-top: 6px; color: #8f959e; font-size: 12px; line-height: 18px; }
+.field-hint { margin-top: 6px; color: #73849a; font-size: 12px; line-height: 18px; }
 .history-heading { gap: 10px; margin-bottom: 16px; }
-.history-heading span { color: #8f959e; font-family: monospace; }
+.history-heading span { color: #73849a; font-family: monospace; }
 .preview-panel { min-height: 360px; }
 .preview-metric-heading {
   display: flex;
@@ -636,7 +636,7 @@ onMounted(async () => {
   padding-bottom: 14px;
   border-bottom: 1px solid #e5e6eb;
   div { display: flex; align-items: baseline; gap: 10px; }
-  span { color: #8f959e; font-family: monospace; }
+  span { color: #73849a; font-family: monospace; }
 }
 .plan-meta {
   display: flex;

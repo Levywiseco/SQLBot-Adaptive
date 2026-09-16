@@ -363,7 +363,7 @@ defineExpose({
 
     .lazy-checkbox {
       font-size: 12px;
-      color: #8f959e;
+      color: #73849a;
     }
   }
 
@@ -435,7 +435,7 @@ defineExpose({
     align-items: center;
 
     .account {
-      color: #8f959e;
+      color: #73849a;
     }
   }
 
@@ -494,7 +494,7 @@ defineExpose({
   .flex {
     display: flex;
     .account {
-      color: #8f959e;
+      color: #73849a;
     }
   }
 

@@ -71,7 +71,7 @@ const defaultSqlBotForm = reactive<SqlBotForm>({
   float_icon_drag: false,
   welcome: t('embedded.i_am_sqlbot'),
   welcome_desc: t('embedded.data_analysis_now'),
-  theme: '#1CBA90',
+  theme: '#1677FF',
   header_font_color: '#1F2329',
   logo: '',
   float_icon: '',
@@ -481,7 +481,7 @@ defineExpose({
           font-weight: 400;
           line-height: 18px;
           white-space: pre-wrap;
-          color: #8f959e;
+          color: #73849a;
         }
       }
 

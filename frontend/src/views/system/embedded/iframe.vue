@@ -1276,7 +1276,7 @@ const saveHandler = () => {
       border-radius: 6px;
 
       .is-active {
-        background: var(--ed-color-primary-1a, #1cba901a);
+        background: var(--ed-color-primary-1a, #1677ff1a);
       }
 
       .ed-button:not(.is-active) {
@@ -1505,7 +1505,7 @@ const saveHandler = () => {
         }
 
         .tip {
-          color: #8f959e;
+          color: #73849a;
           font-family: PingFang SC;
           font-size: 12px;
           line-height: 20px;
@@ -1555,8 +1555,8 @@ const saveHandler = () => {
       }
 
       &.active {
-        background: var(--ed-color-primary-1a, #1cba901a);
-        border-color: var(--ed-color-primary, #1cba90);
+        background: var(--ed-color-primary-1a, #1677ff1a);
+        border-color: var(--ed-color-primary, #1677ff);
       }
     }
 

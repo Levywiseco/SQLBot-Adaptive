@@ -313,7 +313,7 @@ const handleConfirmPassword = () => {
 
     .group-title {
       padding: 0 8px;
-      color: rgba(100, 106, 115, 1);
+      color: #5f7188;
       line-height: 20px;
       font-weight: 500;
       font-size: 12px;
@@ -381,7 +381,7 @@ const handleConfirmPassword = () => {
     }
 
     &:hover {
-      background-color: rgba(31, 35, 41, 0.1);
+      background-color: rgba(22, 119, 255, 0.08);
 
       .more {
         display: block;

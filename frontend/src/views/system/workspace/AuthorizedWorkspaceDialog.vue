@@ -333,7 +333,7 @@ defineExpose({
     .flex {
       align-items: center;
       .account {
-        color: #8f959e;
+        color: #73849a;
       }
     }
   }

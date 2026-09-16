@@ -718,7 +718,7 @@ function getBaseAxis() {
         display: flex;
         align-items: center;
         padding-left: 8px;
-        color: #8f959e;
+        color: #73849a;
       }
     }
 
@@ -828,8 +828,8 @@ function getBaseAxis() {
     }
 
     .chart-active {
-      background: var(--ed-color-primary-1a, rgba(28, 186, 144, 0.1));
-      color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+      background: var(--ed-color-primary-1a, rgba(22, 119, 255, 0.1));
+      color: var(--ed-color-primary, rgba(22, 119, 255, 1));
       border-radius: 6px;
 
       :deep(.ed-select__wrapper) {
@@ -837,15 +837,15 @@ function getBaseAxis() {
       }
 
       :deep(.ed-select__input) {
-        color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+        color: var(--ed-color-primary, rgba(22, 119, 255, 1));
       }
 
       :deep(.ed-select__placeholder) {
-        color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+        color: var(--ed-color-primary, rgba(22, 119, 255, 1));
       }
 
       :deep(.ed-select__caret) {
-        color: var(--ed-color-primary, rgba(28, 186, 144, 1));
+        color: var(--ed-color-primary, rgba(22, 119, 255, 1));
       }
     }
 

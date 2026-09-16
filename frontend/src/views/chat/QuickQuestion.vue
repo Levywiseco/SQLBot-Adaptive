@@ -149,13 +149,13 @@ const props = withDefaults(
     cursor: pointer;
     margin-left: 8px;
     &:hover {
-      color: var(--ed-color-primary-15-d, #189e7a);
+      color: var(--ed-color-primary-15-d, #125fc2);
       background: #1f23291a;
     }
   }
   .title-active {
     color: rgba(24, 158, 122, 1);
-    background: rgba(28, 186, 144, 0.2);
+    background: rgba(22, 119, 255, 0.16);
   }
   .quick_question_content {
     height: 168px;

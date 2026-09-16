@@ -560,7 +560,7 @@ defineExpose({
   >
     <div v-if="isCreate && activeStep !== 2" class="model-name">
       {{ activeName }}
-      <span v-if="form.type !== 'excel'" style="margin-left: 8px; color: #8f959e; font-size: 12px">
+      <span v-if="form.type !== 'excel'" style="margin-left: 8px; color: #73849a; font-size: 12px">
         <span>{{ t('ds.form.support_version') }}:&nbsp;</span>
         <span v-if="form.type === 'sqlServer'">2012+</span>
         <span v-else-if="form.type === 'oracle'">12+</span>
@@ -929,7 +929,7 @@ defineExpose({
       font-weight: 400;
       font-size: 14px;
       line-height: 22px;
-      color: #8f959e;
+      color: #73849a;
       display: inline-block;
       width: 100%;
     }
@@ -955,7 +955,7 @@ defineExpose({
           font-weight: 400;
           font-size: 12px;
           line-height: 20px;
-          color: #8f959e;
+          color: #73849a;
         }
       }
 
